@@ -78,10 +78,22 @@ WSGI_APPLICATION = 'DoWellMaps.wsgi.application'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    #  'default': {
+    #          'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
+    #          'NAME': 'location_search_1',    # mysql database name.
+    #          'USER': 'root',   # db login user name.
+    #          'PASSWORD': 'pass123456', # db login user password.
+    #          'HOST': '', # db machine ip or domain, if left empty then the value is localhost.
+    #          'PORT': '3306', # db server listening port number
+    #      }
+'default': {
+             'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
+             'NAME': '100086$dowell_map_api',    # mysql database name.
+             'USER': '100086',   # db login user name.
+             'PASSWORD': 'dowell@msql#db', # db login user password.
+             'HOST': '100086.mysql.pythonanywhere-services.com', # db machine ip or domain, if left empty then the value is localhost.
+            #  'PORT': '3306', # db server listening port number
+         }
 }
 
 
