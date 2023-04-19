@@ -13,7 +13,7 @@ class GetPlaceDetails(APIView):
     List all countries, or create a new country.
     """
     def get(self, request, format=None):
-        return JsonResponse({"status":"allgood"})
+        return JsonResponse({"status":"All good"})
 #         status_dict = dict()
 #         # countries = Countries.objects.all()
 #         # serializer = CountrySerializer(countries, many=True)        
@@ -73,6 +73,10 @@ class GetPlaceDetails(APIView):
             r=requests.get(url)
             print(r.text)
             results = json.loads(r.text)
+            print("Type resultsa")
+            print(type(results))
+
+            api_response_dict = {"res":results}
             # api_response_dict = api_response.to_dict()
             # print("---The mail has been sent ! Happy :D---")
             return Response(results,status=status.HTTP_200_OK)
