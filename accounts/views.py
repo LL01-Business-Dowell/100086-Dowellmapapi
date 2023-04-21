@@ -207,16 +207,16 @@ class GetPlaceDetailsList(APIView):
             }
             for i in range(len(result_list)):
                 re = insert_data(result_list[i])
-            if re["isSuccess"]:
-                print("ReqData intserted:  --> insert Id: "+str(re["inserted_id"]))
-                total_succ_saved.append(result_list[i]['place_id'])                
-            else:
-                error_message = "Could not insert for : "+result_list[i]['place_id']
-                +". Error from server : "+str(re['error'])+"Successful inserted : "
-                +preparing_list_for_error_message(total_succ_saved)+"Succesful queried :"
-                +preparing_list_for_error_message(total_succ_queried)+"Unsucceful queried are : "+preparing_list_for_error_message(total_failed_queried)
-                # error_message = "Could not insert for : "+place_id_list[0]+". Error from server : "+str(True)+"Successful inserted : "+preparing_list_for_error_message(total_succ_saved)+"Succesful queried : "+preparing_list_for_error_message(total_succ_queried)+"Unsuccefull queried : "+preparing_list_for_error_message(total_failed_queried)
-                return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
+                if re["isSuccess"]:
+                    print("ReqData intserted:  --> insert Id: "+str(re["inserted_id"]))
+                    total_succ_saved.append(result_list[i]['place_id'])                
+                else:
+                    error_message = "Could not insert for : "+result_list[i]['place_id']
+                    +". Error from server : "+str(re['error'])+"Successful inserted : "
+                    +preparing_list_for_error_message(total_succ_saved)+"Succesful queried :"
+                    +preparing_list_for_error_message(total_succ_queried)+"Unsucceful queried are : "+preparing_list_for_error_message(total_failed_queried)
+                    # error_message = "Could not insert for : "+place_id_list[0]+". Error from server : "+str(True)+"Successful inserted : "+preparing_list_for_error_message(total_succ_saved)+"Succesful queried : "+preparing_list_for_error_message(total_succ_queried)+"Unsuccefull queried : "+preparing_list_for_error_message(total_failed_queried)
+                    return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
             return Response(result_dict,status=status.HTTP_200_OK)
         except CustomError:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
