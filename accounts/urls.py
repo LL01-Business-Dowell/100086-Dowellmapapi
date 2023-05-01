@@ -14,3 +14,4 @@ urlpatterns = [
     # path('continents/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.ContinentList.as_view()),
     # path('countries/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.CountryList.as_view()),
 ]
+urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])
