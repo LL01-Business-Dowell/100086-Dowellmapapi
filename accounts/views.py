@@ -223,7 +223,7 @@ class GetPlaceDetailsListStage1(APIView):
         return JsonResponse({"data":"All Good"})
     def post(self, request, format=None):
         # place_id_list = request.POST.getlist('place_id_list')
-        place_id_list2 = request.POST.get('place_id_list')
+        # place_id_list2 = request.POST.get('place_id_list')
         myDict = request.data
         place_id_list = myDict['place_id_list']
         total_succ_queried=list()
@@ -232,17 +232,17 @@ class GetPlaceDetailsListStage1(APIView):
         place_id = ''
         result_list = list()
         result_error = list()
-        print("raw POSY============")
-        print(list(request.POST.items()))
-        print("raw rquest============")
-        print(place_id_list)
-        print(type(place_id_list))
-        print("raw rquest2============")
-        print(place_id_list2)
-        print(type(place_id_list2))
-        print("raw simplejspn============")
-        print(myDict)
-        print(type(myDict))
+        # print("raw POSY============")
+        # print(list(request.POST.items()))
+        # print("raw rquest============")
+        # print(place_id_list)
+        # print(type(place_id_list))
+        # print("raw rquest2============")
+        # print(place_id_list2)
+        # print(type(place_id_list2))
+        # print("raw simplejspn============")
+        # print(myDict)
+        # print(type(myDict))
 
 
 
@@ -295,10 +295,10 @@ class GetPlaceDetailsListStage2(APIView):
         place_id = ''
         result_list = result_dict['succesful_results']
         result_error = list()
-        print("raw POSY============")
-        print(list(request.POST.items()))
-        print(myDict)
-        print(type(myDict))
+        # print("raw POSY============")
+        # print(list(request.POST.items()))
+        # print(myDict)
+        # print(type(myDict))
 
 
 
@@ -333,7 +333,7 @@ class VerifyPlaceIds(APIView):
         return JsonResponse({"data":"All Good Verifier"})
     def post(self, request, format=None):
         # place_id_list = request.POST.getlist('place_id_list')
-        place_id_list2 = request.POST.get('place_id_list')
+        # place_id_list2 = request.POST.get('place_id_list')
         myDict = request.data
         try:
             place_id_list = myDict['place_id_list']
@@ -368,14 +368,14 @@ class GetNearbyPlacesLocally(APIView):
         radius1 = 1000
         radius2 = 2000
         center_loc_str = str(center_latt)+ " , "+str(center_lonn)
-        print("center_loc str", center_loc_str)
+        # print("center_loc str", center_loc_str)
         stored_data_dict = stored_data[0]
         stored_data_df = pd.DataFrame.from_dict(stored_data_dict)
         stored_data_df['location_coord']=stored_data_df['location_coord'].fillna("0 , 0")
         stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(center_loc_str, x["location_coord"]), axis = 1)
         wanted_locs_df =  stored_data_df.loc[(stored_data_df['hav_distances'] > radius1) & (stored_data_df['hav_distances'] < radius2)]
-        print("=============================================================")
-        print(wanted_locs_df[['location_coord','hav_distances']])
+        # print("=============================================================")
+        # print(wanted_locs_df[['location_coord','hav_distances']])
         return JsonResponse({"data":"All Good Local Nearby Places"})
     def post(self, request, format=None):
         myDict = request.data
@@ -387,10 +387,17 @@ class GetNearbyPlacesLocally(APIView):
             center_lonn= myDict['center_lon']
             ###Get Data concerned
             stored_data = dh.fetch_from_json()
+            # stored_data_dict = stored_data[0]
+            # stored_data_df = pd.DataFrame.from_dict(stored_data_dict)
+            # stored_data_df['location_coord']=stored_data_df['location_coord'].fillna(0)
+            # stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(str(center_latt)+ " , "+str(center_lonn), x["location_coord"]), axis = 1)
+            # center_loc_str = str(center_latt)+ " , "+str(center_lonn)
+        # print("center_loc str", center_loc_str)
             stored_data_dict = stored_data[0]
             stored_data_df = pd.DataFrame.from_dict(stored_data_dict)
-            stored_data_df['location_coord']=stored_data_df['location_coord'].fillna(0)
-            stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(str(center_latt)+ " , "+str(center_lonn), x["location_coord"]), axis = 1)
+            stored_data_df['location_coord']=stored_data_df['location_coord'].fillna("0 , 0")
+            stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(center_loc_str, x["location_coord"]), axis = 1)
+            wanted_locs_df =  stored_data_df.loc[(stored_data_df['hav_distances'] > radius1) & (stored_data_df['hav_distances'] < radius2)]
             result_list = []
             result_error = list()
             result_dict = {
