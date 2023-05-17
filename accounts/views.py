@@ -303,24 +303,33 @@ class GetPlaceDetailsListStage2(APIView):
 
 
         try:
-            success_mess = "Saved Succesfully"
-            for i in range(len(result_list)):
-                re = dh.insert_data(result_list[i])
-                if re["isSuccess"]:
-                    print("ReqData intserted:  --> insert Id: "+str(re["inserted_id"]))
-                    total_succ_saved.append(result_list[i]['placeId'])
-                else:
-                    error_message = "Could not insert for : "+result_list[i]['placeId']
-                    +". Error from server : "+str(re['error'])+"Successful inserted : "
-                    +preparing_list_for_error_message(total_succ_saved)+"Succesful queried :"
-                    +preparing_list_for_error_message(total_succ_queried)+"Unsucceful queried are : "+preparing_list_for_error_message(total_failed_queried)
-                    # error_message = "Could not insert for : "+place_id_list[0]+". Error from server : "+str(True)+"Successful inserted : "+preparing_list_for_error_message(total_succ_saved)+"Succesful queried : "+preparing_list_for_error_message(total_succ_queried)+"Unsuccefull queried : "+preparing_list_for_error_message(total_failed_queried)
-                    return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
+            success_mess = "Sent Succesfully"
             return Response(success_mess,status=status.HTTP_200_OK)
         except CustomError:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
         except Http404:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
+        finally:
+            try:
+                success_mess = "Saved Succesfully"
+                for i in range(len(result_list)):
+                    re = dh.insert_data(result_list[i])
+                    if re["isSuccess"]:
+                        print("ReqData intserted:  --> insert Id: "+str(re["inserted_id"]))
+                        total_succ_saved.append(result_list[i]['placeId'])
+                    else:
+                        error_message = "Could not insert for : "+result_list[i]['placeId']
+                        +". Error from server : "+str(re['error'])+"Successful inserted : "
+                        +preparing_list_for_error_message(total_succ_saved)+"Succesful queried :"
+                        +preparing_list_for_error_message(total_succ_queried)+"Unsucceful queried are : "+preparing_list_for_error_message(total_failed_queried)
+                    # error_message = "Could not insert for : "+place_id_list[0]+". Error from server : "+str(True)+"Successful inserted : "+preparing_list_for_error_message(total_succ_saved)+"Succesful queried : "+preparing_list_for_error_message(total_succ_queried)+"Unsuccefull queried : "+preparing_list_for_error_message(total_failed_queried)
+                        return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
+                return Response(success_mess,status=status.HTTP_200_OK)
+            except CustomError:
+                return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
+            except Http404:
+                return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
+
 
 class VerifyPlaceIds(APIView):
     """
@@ -330,7 +339,14 @@ class VerifyPlaceIds(APIView):
         # ll = [{"place_id":"EhdQUTM2K0hNLCBOYWlyb2JpLCBLZW55YSImOiQKCg2PPDr_FWtj6RUQChoUChIJp0lN2HIRLxgRTJKXslQCz_c","place_name":"PQ36+HM","category":["street_address"],"address":"PQ36+HM, Nairobi, Kenya","location_coord":"-1.2960625 , 36.7616875","day_hours":"None","phone":"None","website":"None","type_of_data":"scraped","is_test_data":True,"eventId":["FB1010000000000000000000003004"],"error":False}]
         # ll2 = {'html_attributions': [], 'result': {'address_components': [{'long_name': 'Nairobi', 'short_name': 'Nairobi', 'types': ['locality', 'political']}, {'long_name': 'Maziwa', 'short_name': 'Maziwa', 'types': ['sublocality_level_1', 'sublocality', 'political']}, {'long_name': 'Nairobi County', 'short_name': 'Nairobi County', 'types': ['administrative_area_level_1', 'political']}, {'long_name': 'Kenya', 'short_name': 'KE', 'types': ['country', 'political']}, {'long_name': '00600', 'short_name': '00600', 'types': ['postal_code']}], 'adr_address': 'kingara Road, <span class="street-address">opp kingara close behind Junction Mall</span>, <span class="postal-code">00600</span>, <span class="locality">Nairobi</span>, <span class="country-name">Kenya</span>', 'business_status': 'OPERATIONAL', 'current_opening_hours': {'open_now': True, 'periods': [{'close': {'date': '2023-04-23', 'day': 0, 'time': '2100'}, 'open': {'date': '2023-04-23', 'day': 0, 'time': '1100'}}, {'close': {'date': '2023-04-24', 'day': 1, 'time': '2100'}, 'open': {'date': '2023-04-24', 'day': 1, 'time': '1100'}}, {'close': {'date': '2023-04-25', 'day': 2, 'time': '2100'}, 'open': {'date': '2023-04-25', 'day': 2, 'time': '1100'}}, {'close': {'date': '2023-04-26', 'day': 3, 'time': '2100'}, 'open': {'date': '2023-04-26', 'day': 3, 'time': '1100'}}, {'close': {'date': '2023-04-27', 'day': 4, 'time': '2100'}, 'open': {'date': '2023-04-27', 'day': 4, 'time': '1100'}}, {'close': {'date': '2023-04-21', 'day': 5, 'time': '2100'}, 'open': {'date': '2023-04-21', 'day': 5, 'time': '1100'}}, {'close': {'date': '2023-04-22', 'day': 6, 'time': '2100'}, 'open': {'date': '2023-04-22', 'day': 6, 'time': '1100'}}], 'weekday_text': ['Monday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Tuesday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Wednesday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Thursday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Friday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Saturday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Sunday: 11:00\u202fAM\u2009–\u20099:00\u202fPM']}, 'delivery': True, 'dine_in': True, 'formatted_address': 'kingara Road, opp kingara close behind Junction Mall, Nairobi, Kenya', 'formatted_phone_number': '0742 894700', 'geometry': {'location': {'lat': -1.2960063, 'lng': 36.7616708}, 'viewport': {'northeast': {'lat': -1.294604919708498, 'lng': 36.7631173802915}, 'southwest': {'lat': -1.297302880291502, 'lng': 36.76041941970851}}}, 'icon': 'https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/restaurant-71.png', 'icon_background_color': '#FF9E67', 'icon_mask_base_uri': 'https://maps.gstatic.com/mapfiles/place_api/icons/v2/restaurant_pinlet', 'international_phone_number': '+254 742 894700', 'name': 'Whitefield Restaurant', 'opening_hours': {'open_now': True, 'periods': [{'close': {'day': 0, 'time': '2100'}, 'open': {'day': 0, 'time': '1100'}}, {'close': {'day': 1, 'time': '2100'}, 'open': {'day': 1, 'time': '1100'}}, {'close': {'day': 2, 'time': '2100'}, 'open': {'day': 2, 'time': '1100'}}, {'close': {'day': 3, 'time': '2100'}, 'open': {'day': 3, 'time': '1100'}}, {'close': {'day': 4, 'time': '2100'}, 'open': {'day': 4, 'time': '1100'}}, {'close': {'day': 5, 'time': '2100'}, 'open': {'day': 5, 'time': '1100'}}, {'close': {'day': 6, 'time': '2100'}, 'open': {'day': 6, 'time': '1100'}}], 'weekday_text': ['Monday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Tuesday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Wednesday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Thursday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Friday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Saturday: 11:00\u202fAM\u2009–\u20099:00\u202fPM', 'Sunday: 11:00\u202fAM\u2009–\u20099:00\u202fPM']}, 'photos': [{'height': 720, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jkATuC0T8GjDwd36b2qFmdvX05LoynTd7UYt21ecQeWWbhro-dFZ1X5fmPWgnYx3St6-5ceQoznAl9kiFDzRBivsyP_rNHc0jA9vHJ0SZ2wwzamP4FcP2Pu_36nSZObngCkWOcLN3UeLo5meFYAGLaWsxhhiJjlX2QcM64ZL9CP1_bP', 'width': 960}, {'height': 2448, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jnZFX2-uMZTgVBBo52uE6iWjdNFAemLYStnV1LOKq5vrrkdfvLF8UR0VPrYgo9ZzNFPkZusndaGms8EGKdgWpU02jL59Hr-HZy0tgpD13AV1ikVuKAWuxury0aLX5H845y_JoKhcbRhknrAT1tKEpUvnqth6heS34IZvjxEf3YDiXUB', 'width': 3264}, {'height': 4032, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/117873843766263809334">Evans Sigei</a>'], 'photo_reference': 'AUjq9jmoR1PWZKV0rA8iYwS2LqOJJRtntAmFwurFxPNWpm8hQft8wZnDk_RcC-RwLdDv7AxsLTeLrFUNB554gZ2sR1xKR1DJ7DzbjNyGF-aOQh43DMSKMqeCOA4k9Ql99LCTTFzU-fnf6wyCAKq0g1i5QxFgNNBrZGMbIbFFt96A4WGQBO1J', 'width': 3024}, {'height': 1650, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jmJff323BYeFMIzMLzJmxYwD-2g0EDLrOpGks_FbmyrcYfqnstiZ5U5TUNDGNuC0hN0qN0lw8qjnTZCcPmfJvJH5Rw6AnSuVcWACS45D3o9SVDEFFMg1tfSF1uudbSLT54w63lh0QXj4SqOtYxISaUusPahxCXSHqxa-v8-yhVo_t6B', 'width': 1275}, {'height': 3264, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/117685926906985511601">Mahim Hegde</a>'], 'photo_reference': 'AUjq9jnWZfCKYMFcUXoOBWghItru6bc8lwZF7QSaAECOUu-JJ684azbtplyQcjnLdsr_ZA6ocM-G-JaXsjMVKPjen_KKAWKCj2-OfYIRc_rlm0o4sEePGf2NDpwitGMxnQ8itKHweK3L4CeiJx-Mn71j1gbGiVnXPpRHiYfk_4UQYPwJ9o3i', 'width': 2448}, {'height': 720, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jngXTtuMCD-Pt2OmZcwEKS40hC5rpC9fKJxnx0-ZVLv4RWNt38JRWcaz6xGPXBUKf9sdhH51EhciXmYfM2hWvgi3qNAJvQ6LALvAuP6y3bChqLSefLhlAwQuq395cuhTCoviwWZAjFCO6lsKjDo0mekdGlc4TpxXx2nJUytXq3d1IgS', 'width': 960}, {'height': 1280, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jlNsDNyP6iGDW5G0IEJRTUasz4LkHXbw6YEIly95wgh6fzUSYaAKTL2csQ8n3toTuhUQIsVy6ekD2ZjUXQIk4FHLLkjI_-mIsQWQWmefjh867qtQprVjyC7Cn38OMdbiHq0M1GlEbZNmACByoLF_cr3jgOMZ0bbqSq8P3ySlE15A9J5', 'width': 1280}, {'height': 1280, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jkPG8gKWMtee3Ct8KGUDlber9BW4PqCySq8LhSOYJmAYltKg4hnV-n0UejRM91RHEiW1CCDph049QiJ_wNNowXEX0Ozj0nMjyu0PhF6o01k52bO8BvoViUlSdfOUCom_ZGTw48oMKMvkrCPSGzQuJadfA-DOWbPuiubtO6ur9t-XeYG', 'width': 1280}, {'height': 500, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jn9GgvLFriqvar95wBBO9C44wSkVPpD7BMd6ArKwebr9Lyjq-93XbVEPvkP-pWWnYBfJ6XkLiM21a_W7mNqzv_JlzGnGCUs-YFJ4ugFzmUVWupb-aSM8EdntR7RjNg_hKyGOeXqu_HUOBdTCT7aVgawoy4P9H_i7UN_lps_fmqAJ8ub', 'width': 500}, {'height': 720, 'html_attributions': ['<a href="https://maps.google.com/maps/contrib/111709173699870817395">Whitefield Restaurant</a>'], 'photo_reference': 'AUjq9jlkN2f5c9x01-8wd6hVFQZRITX0Rar1RgnKeViKewap2DNzMoY_5QFqchKpWyqyJrSNd7X2elYUGhA-G-qNoH3cCrNDeexeHV3lMragck_96Kfj4crDmjVqDQNvl-jaE79PhkzmESSV6iOySH8s9lgIyr8o-T27LlqL5z0taUxPvbRq', 'width': 960}], 'place_id': 'ChIJj3S0t1IbLxgRYgL-7uH0NIo', 'plus_code': {'compound_code': 'PQ36+HM Nairobi, Kenya', 'global_code': '6GCRPQ36+HM'}, 'price_level': 2, 'rating': 4.3, 'reference': 'ChIJj3S0t1IbLxgRYgL-7uH0NIo', 'reservable': True, 'reviews': [{'author_name': 'David Kanagaretnam', 'author_url': 'https://www.google.com/maps/contrib/109567623568041706461/reviews', 'language': 'en', 'original_language': 'en', 'profile_photo_url': 'https://lh3.googleusercontent.com/a-/ACB-R5R7RaF1ueYKm_U0ye8jTBBG7K5T3fjTBWQ1MO4BiQ=s128-c0x00000000-cc-rp-mo-ba5', 'rating': 5, 'relative_time_description': 'a year ago', 'text': 'This is a great restaurant for Indian foods mainly however, you will get Kenyan and others too. A calm place to dine with your family and its has a big parking space.  Staff are welcoming and serving the food fast. The place is clean. Prices for food is affordable.', 'time': 1649416437, 'translated': False}, {'author_name': 'Julliet Esta', 'author_url': 'https://www.google.com/maps/contrib/109510066687005858247/reviews', 'language': 'en', 'original_language': 'en', 'profile_photo_url': 'https://lh3.googleusercontent.com/a-/ACB-R5TQOlQJn_hcLNSJJbB7omg4O-RCyfpbt-4t3unXQls=s128-c0x00000000-cc-rp-mo-ba4', 'rating': 5, 'relative_time_description': '11 months ago', 'text': "We received a warm welcome, service was fast, the food was great and the portions are definitely enough. I would recommend this restaurant for Indian, Chinese and African cuisine, there's a large parking area, kids play area and also a kids menu. The food was also affordable", 'time': 1651396718, 'translated': False}, {'author_name': 'Aoko Gathoni', 'author_url': 'https://www.google.com/maps/contrib/110036374557197962895/reviews', 'language': 'en', 'original_language': 'en', 'profile_photo_url': 'https://lh3.googleusercontent.com/a-/ACB-R5RHO3ZIMXY_WihCLk7C2xcQcTKdoc5-QhSNkoWh=s128-c0x00000000-cc-rp-mo-ba4', 'rating': 4, 'relative_time_description': '4 months ago', 'text': "When I arrived, the place looked like it wasn't open. But upon asking someone there, he said it was open.\nI ordered for the half koroga chicken with Naan, and to drink, I had tea masala. I liked that their portions were good size.\nI would definitely go back there.", 'time': 1670771464, 'translated': False}, {'author_name': 'Duncanah Gwat', 'author_url': 'https://www.google.com/maps/contrib/116990714119709426524/reviews', 'language': 'en', 'original_language': 'en', 'profile_photo_url': 'https://lh3.googleusercontent.com/a-/ACB-R5QXiXwls4KibppDfJxM5IHebKyTFfNr5J2j_LoEmw=s128-c0x00000000-cc-rp-mo-ba2', 'rating': 5, 'relative_time_description': '2 months ago',
         # 'text': 'Beutiful place to be, went for a late lunch, nicely ushered in, the waiter was very polite, super helpful. The serve was quick too. The meal was tasty as well', 'time': 1675536564, 'translated': False}, {'author_name': 'B -', 'author_url': 'https://www.google.com/maps/contrib/111323236689199522335/reviews', 'language': 'en', 'original_language': 'en', 'profile_photo_url': 'https://lh3.googleusercontent.com/a-/ACB-R5Rp3yfS6xwFBSbA9ZvQjd0F50zh5RkWTANNhk44IeI=s128-c0x00000000-cc-rp-mo-ba4', 'rating': 1, 'relative_time_description': '2 weeks ago', 'text': 'Lovely place. Quiet and clean. Polite and friendly staff and they make really good Indian food. The parking is a bit cramped but overall a good intimate experience. The prices are also very agreeable.\n\nI went back recently and standards have plummeted. Its now a really horrible, depressing restaurant that has no identity. It wants to be an Indian restaurant but cant, also Chinese but not happening. Poor service and food that was definitely not fresh.', 'time': 1680543330, 'translated': False}], 'serves_beer': True, 'serves_brunch': True, 'serves_dinner': True, 'serves_lunch': True, 'serves_vegetarian_food': True, 'serves_wine': True, 'takeout': True, 'types': ['restaurant', 'food', 'point_of_interest', 'establishment'], 'url': 'https://maps.google.com/?cid=9958853927237452386', 'user_ratings_total': 171, 'utc_offset': 180, 'vicinity': 'kingara Road, opp kingara close behind Junction Mall, Nairobi', 'website': 'https://whitefieldrestaurant.reserveport.com/', 'wheelchair_accessible_entrance': True}, 'status': 'OK'}
-        return JsonResponse({"data":"All Good Verifier"})
+        try:
+            return JsonResponse({"data":"All Good Verifier try return returned"})
+        except:
+            print("Handle erroes")
+        finally:
+
+            print("Another line finally run --------------------------------------->>>>>>>>>>>")
+
     def post(self, request, format=None):
         # place_id_list = request.POST.getlist('place_id_list')
         # place_id_list2 = request.POST.get('place_id_list')
@@ -381,37 +397,56 @@ class GetNearbyPlacesLocally(APIView):
             stored_data_df['location_coord']=stored_data_df['location_coord'].fillna("0 , 0")
             stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(center_loc_str, x["location_coord"]), axis = 1)
             wanted_locs_df =  stored_data_df.loc[(stored_data_df['hav_distances'] >= radius1) & (stored_data_df['hav_distances'] <= radius2)]
-            wanted_locs_df = wanted_locs_df[wanted_locs_df['category'].apply(lambda x: search_string in x)]
-            wanted_locs_df =  wanted_locs_df.loc[wanted_locs_df['type_of_data'] == data_type]
-            print("============================POST=================================")
-            # print(wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId']])
-            print("=============================Inteded to be sean================================")
-            wanted_locs_df['place_id'].fillna("None", inplace=True)
-            wanted_locs_df['placeId'].fillna("None", inplace=True)
-            wanted_locs_df['category'].fillna("None", inplace=True)
-            print(wanted_locs_df[['category']].head())
-            print("============================end of scenrary=================================")
-            wanted_dict = wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId','place_id', 'place_name']].to_dict('records')
-            print("type_wanted_dict[0]['place_name]",type(wanted_dict[0]['place_name']))
-            print("type_wanted_dict[0]['location_coord]",type(wanted_dict[0]['location_coord']))
-            wanted_list = list()
-            place_name_list = list()
-            loc_list = list()
-            for i in wanted_dict:
-                if i['place_name'] not in place_name_list or i['location_coord'] not in loc_list:
-                    place_name_list.append(i['place_name'] )
-                    loc_list.append(i['location_coord'] )
-                    wanted_list.append(i)
+            if len(wanted_locs_df):
+                wanted_locs_df = wanted_locs_df[wanted_locs_df['category'].apply(lambda x: search_string in x)]
+                if len(wanted_locs_df):
+                    wanted_locs_df =  wanted_locs_df.loc[wanted_locs_df['type_of_data'] == data_type]
+                    if len(wanted_locs_df):
+                        print("============================POST=================================")
+                    # print(wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId']])
+                        print("=============================Inteded to be sean================================")
+                        wanted_locs_df['place_id'].fillna("None", inplace=True)
+                        wanted_locs_df['placeId'].fillna("None", inplace=True)
+                        wanted_locs_df['category'].fillna("None", inplace=True)
+                        print(wanted_locs_df[['category']].head())
+                        print("============================end of scenrary=================================")
+                        wanted_dict = wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId','place_id', 'place_name']].to_dict('records')
+                        print("type_wanted_dict[0]['place_name]",type(wanted_dict[0]['place_name']))
+                        print("type_wanted_dict[0]['location_coord]",type(wanted_dict[0]['location_coord']))
+                        wanted_list = list()
+                        place_name_list = list()
+                        loc_list = list()
+                        for i in wanted_dict:
+                            if i['place_name'] not in place_name_list or i['location_coord'] not in loc_list:
+                                place_name_list.append(i['place_name'] )
+                                loc_list.append(i['location_coord'] )
+                                wanted_list.append(i)
 
-            # new_wanted_dict = [dict(t) for t in {tuple(d.items()) for d in wanted_dict}]
-    # using two maps()
-        # list(map(lambda t: dict(t), set(list(map(lambda d: tuple(d.items()), l)))))
-            print("wanted locs columns",wanted_locs_df.columns)
-        # wanted_dict = wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId']].to_dict('records')
-            result_dict = {
-                "data":wanted_list
-                }
-            return Response(result_dict,status=status.HTTP_200_OK)
+                # new_wanted_dict = [dict(t) for t in {tuple(d.items()) for d in wanted_dict}]
+        # using two maps()
+            # list(map(lambda t: dict(t), set(list(map(lambda d: tuple(d.items()), l)))))
+                        print("wanted locs columns",wanted_locs_df.columns)
+                # wanted_dict = wanted_locs_df[['location_coord','hav_distances', 'category', 'placeId']].to_dict('records')
+                        result_dict = {
+                        "data":wanted_list
+                        }
+                        return Response(result_dict,status=status.HTTP_200_OK)
+                    else:
+                        result_dict = {
+                        "data": []
+                        }
+                        return Response(result_dict,status=status.HTTP_200_OK)
+
+                else:
+                    result_dict = {
+                        "data": []
+                        }
+                    return Response(result_dict,status=status.HTTP_200_OK)
+            else:
+                result_dict = {
+                        "data": []
+                        }
+                return Response(result_dict,status=status.HTTP_200_OK)
         except CustomError:
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
         except Http404:
