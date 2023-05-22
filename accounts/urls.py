@@ -10,8 +10,8 @@ urlpatterns = [
     path('verify-place-ids/',views.VerifyPlaceIds.as_view()),
     path('get-local-nearby/',views.GetNearbyPlacesLocally.as_view()),
 
-    path('test-dh/',views.test_dh, name='test-dh'),
-
+    path('refresh-json-dh/',views.refresh_json_dh, name='refresh-json-dh'),
+    path('show-mongo-data/',views.show_mongo_data, name='show-mongo-data'),
     #     path('', views.home),
     #     path('home/', views.api, name='home'),
 

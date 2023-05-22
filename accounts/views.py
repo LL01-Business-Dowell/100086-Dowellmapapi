@@ -253,7 +253,7 @@ class GetPlaceDetailsListStage1(APIView):
 
                 r=requests.get(url)
                 results = json.loads(r.text)
-                # print("raw results============")
+                print("raw results============")
                 # print(results)
                 resp = retrieve_details(results, plc_id, True)
                 if not resp['error']:
@@ -303,6 +303,7 @@ class GetPlaceDetailsListStage2(APIView):
 
 
         try:
+            print("FIrst return succesfully")
             success_mess = "Sent Succesfully"
             return Response(success_mess,status=status.HTTP_200_OK)
         except CustomError:
@@ -310,6 +311,7 @@ class GetPlaceDetailsListStage2(APIView):
         except Http404:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
         finally:
+            print("In the finally")
             try:
                 success_mess = "Saved Succesfully"
                 for i in range(len(result_list)):
@@ -360,13 +362,14 @@ class VerifyPlaceIds(APIView):
             result_dict = {
                     "unique_ids": result_list,
                 }
+            print("unique_ids",result_dict)
             return Response(result_dict,status=status.HTTP_200_OK)
         except CustomError:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
         except Http404:
             return Response("No results for the place id: "+place_id, status=status.HTTP_400_BAD_REQUEST)
 
-def test_dh(request):
+def refresh_json_dh(request):
     my_list = dh.create_json_data()
     return JsonResponse({"data":"Tst Dh Good"})
 
@@ -451,3 +454,6 @@ class GetNearbyPlacesLocally(APIView):
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
         except Http404:
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
+def show_mongo_data(request):
+    needed_m_data = dh.fetch_from_mongo()
+    return JsonResponse({"data":needed_m_data})
