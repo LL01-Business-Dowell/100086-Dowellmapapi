@@ -275,7 +275,7 @@ class GetPlaceDetailsListStage1(APIView):
 
 
 
-class GetPlaceDetailsListStage2(APIView):
+class SavePlacesDetail(APIView):
     """
     List all countries, or create a new country.
     """
