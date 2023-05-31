@@ -6,7 +6,7 @@ urlpatterns = [
     path('get-details/',views.GetPlaceDetails.as_view()),
     path('get-details-list/',views.GetPlaceDetailsList.as_view()),
     path('get-details-list-stage1/',views.GetPlaceDetailsListStage1.as_view()),
-    path('get-details-list-stage2/',views.GetPlaceDetailsListStage2.as_view()),
+    path('save-places-detail/',views.SavePlacesDetail.as_view()),
     path('verify-place-ids/',views.VerifyPlaceIds.as_view()),
     path('get-local-nearby/',views.GetNearbyPlacesLocally.as_view()),
 
