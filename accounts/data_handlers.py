@@ -84,7 +84,7 @@ def fetch_from_json():
         isTempExist = os.path.exists(temp_file_name)
         sizee = os.path.getsize(temp_file_name)
         file_stats = os.stat(temp_file_name)
-        # print("i ", i)
+        print("i ", i)
         # print("sizee",sizee)
         # print(f"file_stats in bytes is {file_stats.st_size}")
         # print(f"file_stats in megabytes is {file_stats.st_size / (1024 * 1024)}")
@@ -92,13 +92,85 @@ def fetch_from_json():
             with open(temp_file_name, 'r') as openfile:
             # Reading from json file
                 json_object = json.load(openfile)
-                # print("Round ===================")
-                # print(json_object)
-                # print("Round ===================")
+                print("Round ==========start=========")
+                df = pd.DataFrame(json_object[:10])
+                print(df.head(5))
+                print("Round =========end==========")
 
             json_data_lists.append(json_object)
     # print(json_data_lists)
     return json_data_lists
+def fetch_from_registered_json():
+
+    # file_path = 'json_data\sample.json'
+    # n= len(os.listdir(directory))
+    # isExist = os.path.exists(file_path)
+    # print(isExist)
+    # print(n)
+    json_data_lists = list()
+    my_reg_list = []
+#     for i in range(1,n+1):
+#         temp_file_name =  os.path.join(directory, "rec"+str(i)+".json")
+#         isTempExist = os.path.exists(temp_file_name)
+#         sizee = os.path.getsize(temp_file_name)
+#         file_stats = os.stat(temp_file_name)
+#         print("i ", i)
+#         # print("sizee",sizee)
+#         # print(f"file_stats in bytes is {file_stats.st_size}")
+#         # print(f"file_stats in megabytes is {file_stats.st_size / (1024 * 1024)}")
+#         if isTempExist:
+#             with open(temp_file_name, 'r') as openfile:
+#             # Reading from json file
+#                 json_object = json.load(openfile)
+#                 print("Round ==========start=========")
+#                 print("type of json_object[0] == ", type(json_object[0]))
+#                 my_reg_list += [
+#     my_dict for my_dict in json_object if"type_of_data" in my_dict and my_dict['type_of_data'] == 'scraped'
+# ]
+#                 print("length of my_reg_list == ", len(my_reg_list))
+#                 print("type of my_reg_list[-1] == ", type(my_reg_list[-1]))
+#                 print("my_reg_list[0] == ", my_reg_list[0])
+#                 print("Round =========end==========")
+
+            # json_data_lists.append(json_object)
+    # print(json_data_lists)
+    url = "http://100002.pythonanywhere.com/"
+    headers = {'content-type': 'application/json'}
+
+    payload = {
+    "cluster": "dowellmap",
+    "database": "dowellmap",
+    "collection": "my_map",
+    "document": "my_map",
+    "team_member_ID": "1164",
+    "function_ID": "ABCDE",
+    "command": "fetch",
+    "field": {
+
+        },
+    "update_field": {
+        "order_nos": 21
+        },
+    "platform": "bangalore"
+    }
+    data = json.dumps(payload)
+    response = requests.request("POST", url, headers=headers, data=data)
+    # print(response.text)
+    result = json.loads(response.text)
+    print("Round ==========start=========")
+    print("type of result['data']] == ", type(result['data'][0]))
+    my_reg_list += [
+my_dict for my_dict in result['data'] if"type_of_data" in my_dict and my_dict['type_of_data'] == 'registered'
+]
+    print("length of my_reg_list == ", len(my_reg_list))
+    print("type of my_reg_list[-1] == ", type(my_reg_list[-1]))
+    print("my_reg_list[0] == ", my_reg_list[0])
+    print("Round =========end==========")
+
+    # print(result['isSuccess'])
+    # print(type(result['data']))
+    # print(result['data'])
+    return my_reg_list
 ### Wtiter to json
 def write_json_data(file_name, new_data):
     try:

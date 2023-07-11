@@ -12,6 +12,8 @@ urlpatterns = [
 
     path('refresh-json-dh/',views.refresh_json_dh, name='refresh-json-dh'),
     path('show-mongo-data/',views.show_mongo_data, name='show-mongo-data'),
+    path('show-json-data/',views.show_json_data, name='show-json-data'),
+    path('get-hav-distance/',views.TestLocalDistance.as_view()),
     #     path('', views.home),
     #     path('home/', views.api, name='home'),
 
