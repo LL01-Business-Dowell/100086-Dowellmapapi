@@ -406,12 +406,30 @@ class GetNearbyPlacesLocally(APIView):
         myDict = request.data
         try:
             ##Retrieve values
+            type_error_message = "Kindly check if the parameter"
             radius1 = myDict['radius1']
             radius2 = myDict['radius2']
             center_latt = myDict['center_lat']
             center_lonn= myDict['center_lon']
             search_string = myDict['query_string']
             data_type = myDict['data_type']
+            type_error_message = "Wrong parameter type for radius1 should be of a float/int type."
+            radius1 = float(radius1)
+            type_error_message = "Wrong parameter type for radius2 should be of a float/int type."
+            radius2 = float(radius2)
+            type_error_message = "Wrong parameter type for center_latt should be of a float type."
+            center_latt = float(center_latt)
+            type_error_message = "Wrong parameter type for center_lonn should be of a float type."
+            center_lonn = float(center_lonn)
+            type_error_message = "Wrong parameter type for search_string should be of a string type."
+            if  not isinstance(search_string, str):
+                raise ValueError(type_error_message)
+            # search_string = str(search_string)
+            type_error_message = "Wrong parameter type for data_type should be of a string type and should be equal to 'registered'/'scraped'/'all'."
+            if  not isinstance(data_type, str):
+                raise ValueError(type_error_message)
+            if data_type != "registered"  and data_type != "scraped" and data_type != "all":
+                raise ValueError(type_error_message)
             center_loc_str = str(center_latt)+ " , "+str(center_lonn)
             ###Get Data concerned
             # stored_data = dh.fetch_from_json()
@@ -423,6 +441,9 @@ class GetNearbyPlacesLocally(APIView):
             stored_data_df["hav_distances"] = stored_data_df.apply(lambda x: dh.split_string(center_loc_str, x["location_coord"]), axis = 1)
             wanted_locs_df =  stored_data_df.loc[(stored_data_df['hav_distances'] >= radius1) & (stored_data_df['hav_distances'] <= radius2)]
             if len(wanted_locs_df):
+                wanted_locs_df['category'].fillna("None", inplace=True)
+                print("wanted_locs_df lenfght = ", len(wanted_locs_df))
+                print("wanted_locs_df  = ", wanted_locs_df[['category']])
                 wanted_locs_df = wanted_locs_df[wanted_locs_df['category'].apply(lambda x: search_string in x)]
                 if len(wanted_locs_df):
                     wanted_locs_df =  wanted_locs_df.loc[wanted_locs_df['type_of_data'] == data_type]
@@ -474,6 +495,8 @@ class GetNearbyPlacesLocally(APIView):
                         "data": []
                         }
                 return Response(result_dict,status=status.HTTP_200_OK)
+        except ValueError:
+            return Response(type_error_message, status=status.HTTP_400_BAD_REQUEST)
         except CustomError:
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
         except Http404:
