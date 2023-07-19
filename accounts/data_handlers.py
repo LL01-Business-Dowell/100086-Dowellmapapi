@@ -42,8 +42,8 @@ def insert_data(data):
 ######
 
 #Fetch Data From Mongo
-def fetch_from_mongo():
-    url = "http://100002.pythonanywhere.com/"
+def fetch_from_mongo(field = {}):
+    url = "http://uxlivinglab.pythonanywhere.com/"
     headers = {'content-type': 'application/json'}
 
     payload = {
@@ -54,9 +54,7 @@ def fetch_from_mongo():
     "team_member_ID": "1164",
     "function_ID": "ABCDE",
     "command": "fetch",
-    "field": {
-
-        },
+    "field": field,
     "update_field": {
         "order_nos": 21
         },
@@ -66,9 +64,11 @@ def fetch_from_mongo():
     response = requests.request("POST", url, headers=headers, data=data)
     # print(response.text)
     result = json.loads(response.text)
+    result = json.loads(result)
     # print(result['isSuccess'])
     # print(type(result['data']))
-    # print(result['data'])
+    print("===========================")
+    print(response.text)
     return result['data']
 #Fetch Data from Json
 def fetch_from_json():
@@ -291,6 +291,27 @@ def get_unique(place_id_list):
         return distinct_list
     else:
         return []
+def get_unique_from_mongo(place_id_list):
+    #Fetch all place ids
+    distinct_list = list()
+    for i in place_id_list:
+        field = {
+            'placeId': i,
+            # 'place_id': i
+        }
+        print("field = ", field)
+        retrieve_id = fetch_from_mongo(field)
+        print("retrieve_id = ", retrieve_id)
+        if retrieve_id is  None or len(retrieve_id) == 0:
+            # if len(retrieve_id) == 0:
+            print("retrieve_id = ", retrieve_id)
+            distinct_list.append(i)
+
+
+    
+
+    return distinct_list
+
 ### Get differremce in distances
 def get_difference(latt1,lonn1, latt2,lonn2):
     loc1 = (latt1,lonn1)
