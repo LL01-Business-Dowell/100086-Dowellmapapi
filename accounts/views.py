@@ -10,6 +10,7 @@ from accounts import data_handlers as dh
 import pandas as pd
 from datetime import datetime
 import googlemaps
+from decouple import config
 # Create your views here.
 import time
 # while True:
@@ -504,92 +505,9 @@ class GetNearbyPlacesLocally(APIView):
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
 class GetNearbyPlacesLocallyV2(APIView):
     def get(self, request, format=None):
-        api_key = "AIzaSyAsH8omDk8y0lSGLTW9YtZiiQ2MkmsF-uQ"
-        gmaps = googlemaps.Client(key=api_key)
-        url = "https://maps.googleapis.com/maps/api/place/textsearch/json?"
-        query = "cafe"
-        location = "19.076090,72.877426"
-        loc2 = "43.000000,-75.000000"
-        radius = 10000
-        rad2=10000
-        max_res = 60
-        count_res = max_res
-
-        # q = f"{url}&query={query}&key={api_key}&location={loc2}&radius={radius}&next_page_token={max_res}"
-        # q2 =  f"{url}&query={query}&key={api_key}&location={loc2}&radius={rad2}&next_page_token={max_res}"
-        check = True
-        t = 0
-        page_tok1 = 0
-        page_tok2 = 0
-        wanted_list_1 = []
-        wanted_list_2 = []
-        place_id_list_1 = []
-        place_id_list_2 = []
-
-        while check:
-            t = t+1
-            print("t == ", t)
-            params1 = {
-    'query': ['restaurants', 'bakery', 'cafe', 'food'],
-    'location': (19.076090,72.877426),
-    'radius': 10000
-}
-            params2 = {
-    'query': ['restaurants', 'bakery', 'cafe', 'food'],
-    'location': (43.000000,-75.000000),
-    'radius': 10000
-}
-            if t >1:
-                params1['page_token'] = page_tok1
-                params2['page_token'] = page_tok2
-                # q = f"{url}&query={query}&key={api_key}&location={loc2}&radius={radius}&next_page_token={max_res}"
-                # q2 =  f"{url}&query={query}&key={api_key}&location={loc2}&radius={rad2}&next_page_token={max_res}"
-            # else:
-
-                # q = f"{url}&query={query}&key={api_key}&location={loc2}&radius={radius}&pagetoken={page_tok1}&next_page_token={max_res}"
-                # q2 =  f"{url}&query={query}&key={api_key}&location={loc2}&radius={rad2}&pagetoken={page_tok2}&next_page_token={max_res}"
-            # print("q = ",q)
-            # print("q2 = ",q2)
-            print("page_tok1 = ",page_tok1)
-            print("page_tok2 = ",page_tok2)
-            # r = requests.get(q)
-            # r2 = requests.get(q2)
-            # r_json = r.json()
-            # r_json2 = r2.json()
-            time.sleep(2)
-            r_json =gmaps.places(**params1)
-            r_json2 =gmaps.places(**params2)
-            count_res -= 20
-            wanted_list_1.extend(r_json['results'])
-            wanted_list_2.extend(r_json2['results'])
-            if count_res == 0:
-                check = False
-            else:
-                page_tok1 =r_json['next_page_token']
-                page_tok2 =r_json2['next_page_token']
-
-            print("laenghth og wanted list 1", len(wanted_list_1))
-            print("laenghth og wanted list 2", len(wanted_list_2))
-
-        for i in wanted_list_1:
-            resp = i["place_id"]
-            place_id_list_1.append(resp)
-        for i in wanted_list_2:
-            resp = i["place_id"]
-            place_id_list_2.append(resp)
-        place_det_url ="https://100086.pythonanywhere.com/accounts/get-details-list-stage1/"
-        place_params_1 = {
-            "place_id_list":place_id_list_1
-            }
-        place_params_2 = {
-            "place_id_list":place_id_list_2
-            }
-        resp_1 =requests.post(place_det_url,json=place_params_1)
-        resp_2 =requests.post(place_det_url,json=place_params_2)
-        return JsonResponse({"info":"Kindly use a POST request instead of GET Version 2", "data":{"list 1": place_id_list_1, "list 2": place_id_list_2}})
+        return JsonResponse({"info":"Kindly use a POST request instead of GET Version 2"})
     def post(self, request, format=None):
-        pass
-        api_key = "AIzaSyAsH8omDk8y0lSGLTW9YtZiiQ2MkmsF-uQ"
+        api_key = config("API_KEY")
         gmaps = googlemaps.Client(key=api_key)
         myDict = request.data
         try:
