@@ -567,7 +567,7 @@ class GetNearbyPlacesLocallyV2(APIView):
 
             print("laenghth og wanted list post", len(wanted_list))
             result_dict = {
-                        "place_id_list": wanted_list
+                        "data": wanted_list
                         }
             return Response(result_dict,status=status.HTTP_200_OK)
 
@@ -646,6 +646,7 @@ class GetCategories(APIView):
         shops = ["Store",    "Mall",    "Outlet mall",    "Grocery store",    "Farmers market",    "Department store",    "Clothing store",    "Shoe store",    "Jewelry store",    "Electronics store",    "Furniture store",    "Home improvement store",    "Sporting good store"]
         transport = ["Airport",    "Bus station",    "Train station",    "Taxi stand",    "Car rental agency",    "Ferry terminal",    "Parking garage",    "Gas station",    "Tow truck company"]
         categories = foods+ entertainment +health_and_spiritual+sports+shops+transport
+        # categories = foods
         print("length cats", len(categories))
         categories = list(set(categories))
         print("length cats", len(categories))
