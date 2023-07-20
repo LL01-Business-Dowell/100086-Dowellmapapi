@@ -561,45 +561,32 @@ class GetNearbyPlacesLocallyV2(APIView):
                 count_res -= 20
                 wanted_list.extend(r_json['results'])
 
+
                 if count_res == 0:
                     check = False
                 else:
                     page_tok =r_json['next_page_token']
 
             print("laenghth og wanted list post", len(wanted_list))
-            result_dict = {
-                        "place_id_list": wanted_list
-                        }
-            return Response(result_dict,status=status.HTTP_200_OK)
-
-
-
-
-
-            # wanted_list = list()
-            #             if len(wanted_list):
-            #                 result_dict = {
-            #                 "data":wanted_list
-            #                 }
-            #                 return Response(result_dict,status=status.HTTP_200_OK)
-            #             else:
-            #                 result_dict = {
-            #                 "message": "Currently, there are no locations for the center and distance range in the payload you sent.",
-            #                 "data": []
-            #                 }
-            #                 return Response(result_dict,status=status.HTTP_200_OK)
-
-            #     else:
-            #         result_dict = {
-            #             "message": "Currently, there are no stored locations for the center and distance range in the payload you sent.",
-            #             "data": []
+            for i in wanted_list:
+                place_id_list.append(i['place_id'])
+            # result_dict = {
+            #             "place_id_list": wanted_list
             #             }
-            #         return Response(result_dict,status=status.HTTP_200_OK)
-            # else:
-            #     result_dict = {
-            #             "data": []
-            #             }
-            # return Response(result_dict,status=status.HTTP_200_OK)
+            print("laenghth og place_id_list post", len(place_id_list))
+            print("place_id_list post", place_id_list)
+            payload_2 = {
+                "place_id_list":place_id_list
+            }
+            res = requests.post('https://100086.pythonanywhere.com/accounts/get-details-list-stage1/',json=payload_2)
+            print("-------------------------------------------------------------------------------")
+            # print(res.text)
+            print(type(res.text))
+            # print(json.loads(res.text))
+            result = json.loads(res.text)
+            print(type(result))
+
+            return Response(result,status=status.HTTP_200_OK)
         except ValueError:
             return Response(type_error_message, status=status.HTTP_400_BAD_REQUEST)
         except CustomError:
