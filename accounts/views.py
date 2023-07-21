@@ -71,6 +71,8 @@ def retrieve_details(results_1, plc_id, is_test_data):
     website = 'None'
     open_hrs = 'None'
     int_number = 'None'
+    photo_reference ='None'
+    rating = 'None'
     error = False
     eventId = get_event_id()
     if results_1['status'] == 'OK':
@@ -102,6 +104,13 @@ def retrieve_details(results_1, plc_id, is_test_data):
         if 'opening_hours' in results:
             # print(results['opening_hours']["weekday_text"])
             open_hrs = results['opening_hours']["weekday_text"]
+        if 'photos' in results:
+            # print(results['place_id'])
+            photo_reference = results['photos'][0]['photo_reference']
+        if "rating" in results:
+            # print(results['place_id'])
+            rating = results["rating"]
+
     else:
         error = True
     template = {
@@ -113,10 +122,13 @@ def retrieve_details(results_1, plc_id, is_test_data):
     'day_hours': open_hrs,
     'phone': int_number,
     'website': website,
+     "photo_reference":photo_reference,
+     "rating":rating,
     "type_of_data": "scraped",
     "is_test_data": is_test_data,
         "eventId": eventId,
         "error": error
+
         }
     return template
 
@@ -568,20 +580,22 @@ class GetNearbyPlacesLocallyV2(APIView):
                     page_tok =r_json['next_page_token']
 
             print("laenghth og wanted list post", len(wanted_list))
+            for i in wanted_list:
+                place_id_list.append(i['place_id'])
             print("laenghth og place_id_list post", len(place_id_list))
             print("place_id_list post", place_id_list)
             payload_2 = {
                 "place_id_list":place_id_list
             }
-            res = requests.post('https://100086.pythonanywhere.com/accounts/get-details-list-stage1/',json=payload_2)
+            # res = requests.post('https://100086.pythonanywhere.com/accounts/get-details-list-stage1/',json=payload_2)
             print("-------------------------------------------------------------------------------")
             # print(res.text)
-            print(type(res.text))
+            # print(type(res.text))
             # print(json.loads(res.text))
-            result = json.loads(res.text)
-            print(type(result))
+            # result = json.loads(res.text)
+            # print(type(result))
 
-            return Response(result,status=status.HTTP_200_OK)
+            return Response(payload_2,status=status.HTTP_200_OK)
         except ValueError:
             return Response(type_error_message, status=status.HTTP_400_BAD_REQUEST)
         except CustomError:
