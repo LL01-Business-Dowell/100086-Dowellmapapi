@@ -71,7 +71,7 @@ def retrieve_details(results_1, plc_id, is_test_data):
     website = 'None'
     open_hrs = 'None'
     int_number = 'None'
-    photo_reference ='None'
+    photos ='None'
     rating = 'None'
     error = False
     eventId = get_event_id()
@@ -106,7 +106,7 @@ def retrieve_details(results_1, plc_id, is_test_data):
             open_hrs = results['opening_hours']["weekday_text"]
         if 'photos' in results:
             # print(results['place_id'])
-            photo_reference = results['photos'][0]['photo_reference']
+            photos = results['photos']
         if "rating" in results:
             # print(results['place_id'])
             rating = results["rating"]
@@ -122,7 +122,7 @@ def retrieve_details(results_1, plc_id, is_test_data):
     'day_hours': open_hrs,
     'phone': int_number,
     'website': website,
-     "photo_reference":photo_reference,
+     "photos":photos,
      "rating":rating,
     "type_of_data": "scraped",
     "is_test_data": is_test_data,
