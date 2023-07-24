@@ -11,6 +11,7 @@ import pandas as pd
 from datetime import datetime
 import googlemaps
 from decouple import config
+api_key = config("API_KEY")
 # Create your views here.
 import time
 # while True:
@@ -201,8 +202,8 @@ class GetPlaceDetailsList(APIView):
         try:
             for plc_id in place_id_list:
                 place_id = plc_id
-                # url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+plc_id+'&key=AIzaSyC_oMIdGvpBALKg6W6TPgpwVLb-viGwonY'
-                url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key=AIzaSyAsH8omDk8y0lSGLTW9YtZiiQ2MkmsF-uQ'
+
+                url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key='+api_key
 
                 r=requests.get(url)
                 results = json.loads(r.text)
@@ -520,7 +521,7 @@ class GetNearbyPlacesLocallyV2(APIView):
     def get(self, request, format=None):
         return JsonResponse({"info":"Kindly use a POST request instead of GET Version 2"})
     def post(self, request, format=None):
-        api_key = config("API_KEY")
+
         gmaps = googlemaps.Client(key=api_key)
         myDict = request.data
         try:
