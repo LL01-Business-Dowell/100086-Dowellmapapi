@@ -143,8 +143,7 @@ class GetPlaceDetails(APIView):
         return JsonResponse({"status":"Kindly use a POST request instead of GET"})
     def post(self, request):
         place_id = request.data.get('place_id')
-        # url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key=AIzaSyC_oMIdGvpBALKg6W6TPgpwVLb-viGwonY'
-        url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key=AIzaSyAsH8omDk8y0lSGLTW9YtZiiQ2MkmsF-uQ'
+        url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key='+api_key
 
 
         try:
@@ -276,8 +275,7 @@ class GetPlaceDetailsListStage1(APIView):
         try:
             for plc_id in place_id_list:
                 place_id = plc_id
-                # url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+plc_id+'&key=AIzaSyC_oMIdGvpBALKg6W6TPgpwVLb-viGwonY'
-                url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key=AIzaSyAsH8omDk8y0lSGLTW9YtZiiQ2MkmsF-uQ'
+                url='https://maps.googleapis.com/maps/api/place/details/json?placeid='+place_id+'&key='+api_key
                 r=requests.get(url)
                 results = json.loads(r.text)
                 # print("raw results new stage 1============")
