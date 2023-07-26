@@ -4,11 +4,15 @@ import os
 import pandas as pd
 from django.conf import settings
 import haversine as hs
+import googlemaps
+from decouple import config
 BASE_DIR = settings.BASE_DIR
 static_path = os.path.join(BASE_DIR, 'static')
 directory =  os.path.join(BASE_DIR, 'json_data')
 id_directory =  os.path.join(BASE_DIR, 'json__id_data')
 plc_id_file_name =  os.path.join(id_directory, "id_json_data.json")
+api_key = config("API_KEY")
+client = googlemaps.Client(key=api_key)
 ##Insertion of data
 def insert_data(data):
     #dowellconnectionfunction
@@ -68,7 +72,7 @@ def fetch_from_mongo(field = {}):
     # print(result['isSuccess'])
     # print(type(result['data']))
     print("===========================")
-    print(response.text)
+    # print(response.text)
     return result['data']
 #Fetch Data from Json
 def fetch_from_json():
@@ -308,7 +312,7 @@ def get_unique_from_mongo(place_id_list):
             distinct_list.append(i)
 
 
-    
+
 
     return distinct_list
 
@@ -338,6 +342,41 @@ def split_string(loc_str1, loc_str2):
     # print("lonn ",lonn2)
     hav_distance = get_difference(latt1,lonn1, latt2,lonn2)
     return hav_distance
+def get_distance(loc_str1, loc_str2):
+    # print("loc_str 1", loc_str1)
+    # print("loc_str 2", loc_str2)
+
+    if loc_str1 == '' or loc_str1 == ' ':
+        loc_str1 = '0 , 0'
+    if loc_str2 == '' or loc_str2 == ' ':
+        loc_str2 = '0 , 0'
+    offset1 = loc_str1.find(',')
+    latt1 = float(loc_str1[:offset1].strip())
+    lonn1 = float(loc_str1[offset1+1:].strip())
+    # print("latt ",latt1)
+    # print("lonn ",lonn1)
+    offset2 = loc_str2.find(',')
+    latt2 = float(loc_str2[:offset2].strip())
+    lonn2 = float(loc_str2[offset2+1:].strip())
+    # print("latt ",latt2)
+    # print("lonn ",lonn2)
+    origins =[{'lat':latt1, 'lng':lonn1}] #street, zip code, town
+# #     destination = street zip code, town, arrival/departure, time, best guess pessi/optimistic
+    destinations = [{'lat':latt2, 'lng':lonn2} ]
+
+    matrix = client.distance_matrix(
+                            origins ,destinations,
+                            mode = "driving",
+                            # mode= "transit",
+                            # departure_time = datetime.now(),
+                            # traffic_model = "optimistic",
+                        )
+    # print("matrix", matrix)
+    # print("matrix type",type( matrix))
+    # print("----------------------------------------------------------")
+    # print(matrix['rows'][0]['elements'][0]['distance']['value'])
+    # hav_distance = get_difference(latt1,lonn1, latt2,lonn2)
+    return matrix['rows'][0]['elements'][0]['distance']['value']
 
 
 
