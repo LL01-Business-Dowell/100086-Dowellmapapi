@@ -6,6 +6,7 @@ from django.conf import settings
 import haversine as hs
 import googlemaps
 from decouple import config
+import json
 BASE_DIR = settings.BASE_DIR
 static_path = os.path.join(BASE_DIR, 'static')
 directory =  os.path.join(BASE_DIR, 'json_data')
@@ -13,6 +14,30 @@ id_directory =  os.path.join(BASE_DIR, 'json__id_data')
 plc_id_file_name =  os.path.join(id_directory, "id_json_data.json")
 api_key = config("API_KEY")
 client = googlemaps.Client(key=api_key)
+class CustomError(Exception):
+    pass
+def processApikey(api_key):
+    url = f'https://100105.pythonanywhere.com/api/v3/process-services/?type=api_service&api_key={api_key}'
+    print(api_key)
+    print(url)
+    payload = {
+        "service_id" : "DOWELL10005"
+    }
+
+    response = requests.post(url, json=payload)
+    print("response.status === ", response.status_code)
+    print("response === ", response.text)
+    # if response.status_code == 400 or response.status_code == "400":
+        # raise CustomError
+    # else:
+
+    # response.status_code
+    res = json.loads(response.text)
+    print("res.success",res["success"])
+    print("res.success type",type(res["success"]))
+    return response
+
+
 ##Insertion of data
 def insert_data(data):
     #dowellconnectionfunction
