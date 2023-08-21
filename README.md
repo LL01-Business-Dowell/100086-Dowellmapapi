@@ -12,6 +12,9 @@ Once you have successfully obtained the place details, you can send them to this
 ## Get Local Nearby Locations
 This endpoint is used to retrieve locations from the Dowell database that meet certain criteria specified in the payload. The input includes two radii, which define the distance range. By comparing the center location in the payload with each location in the database using the Haversine distance formula, the API returns the locations that fall within the specified distance range. These locations can be plotted on a Google Map to provide the user with nearby options.
 
+## Get Local Nearby Locations Version 2
+This endpoint is used to retrieve locations between the range provided in the inputs. The input includes two radii which define the distance range, center location detail, limit of results where the maximum limit is 60, a query string to help know the type of location desired and an api_key to verify the credits available for the user.
+
 Please note that the detailed technical specifications and usage of each endpoint can be found in the [provided link](https://documenter.getpostman.com/view/25619963/2s93mBwJbH) to the API documentation.
 
 
