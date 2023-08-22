@@ -1,5 +1,7 @@
 # 100086-Dowellmapapi
 
+## Get Categories
+This endpoint gets the categories of locations. The categories are the Google standard of categorizing locations.
 ## Verify Places Ids
 This endpoint checks if the provided place IDs already exist in the database. Its purpose is to prevent duplication of data. It returns only the place IDs that do not exist in the database, allowing you to query and save their details without duplicating existing data.
 
