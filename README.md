@@ -17,6 +17,8 @@ This endpoint is used to retrieve locations from the Dowell database that meet c
 ## Get Local Nearby Locations Version 2
 This endpoint is used to retrieve locations between the range provided in the inputs. The input includes two radii which define the distance range, center location detail, limit of results where the maximum limit is 60, a query string to help know the type of location desired and an api_key to verify the credits available for the user.
 
+While activating the services for the key purchase. Ensure you activate the "	DOWELL10009	LIVING LAB MAPS" service for the use of these endpoints.
+
 Please note that the detailed technical specifications and usage of each endpoint can be found in the [provided link](https://documenter.getpostman.com/view/25619963/2s93mBwJbH) to the API documentation.
 
 
