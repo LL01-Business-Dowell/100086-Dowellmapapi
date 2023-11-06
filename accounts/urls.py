@@ -1,7 +1,7 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from accounts import views
-
+from accounts import data_cube_views
 urlpatterns = [
     path('get-details/',views.GetPlaceDetails.as_view()),
     path('get-details-list/',views.GetPlaceDetailsList.as_view()),
@@ -15,6 +15,16 @@ urlpatterns = [
     path('show-json-data/',views.show_json_data, name='show-json-data'),
     path('get-hav-distance/',views.TestLocalDistance.as_view()),
     path('get-categories/',views.GetCategories.as_view()),
+    path('get-locs/', data_cube_views.GetLocations.as_view()),
+    path('create-profile/', data_cube_views.CreateUserProfile.as_view()),
+    path('create-loc-group/', data_cube_views.CreateLocGroup.as_view()),
+    path('create-location/', data_cube_views.CreateLocation.as_view()),
+    path('update-loc-group/', data_cube_views.UpdateLocGroup.as_view()),
+    path('update-location/', data_cube_views.UpdateLocation.as_view()),
+    path('delete-user-locs/', data_cube_views.DeleteUserProfile.as_view()),
+    path('delete-loc-group/', data_cube_views.DeleteLocGroup.as_view()),
+    path('delete-loc/', data_cube_views.DeleteLocation.as_view()),
+    path('sync-groups/', data_cube_views.SyncGroups.as_view()),
     #     path('', views.home),
     #     path('home/', views.api, name='home'),
 

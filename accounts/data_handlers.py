@@ -21,7 +21,7 @@ def processApikey(api_key):
     print(api_key)
     print(url)
     payload = {
-        "service_id" : "DOWELL10005"
+        "service_id" : "DOWELL10009"
     }
 
     response = requests.post(url, json=payload)
@@ -351,18 +351,37 @@ def split_string(loc_str1, loc_str2):
     # print("loc_str 1", loc_str1)
     # print("loc_str 2", loc_str2)
 
-    if loc_str1 == '' or loc_str1 == ' ':
+    if loc_str1 == '' or loc_str1 == ' ' or loc_str1 == 'nul' :
         loc_str1 = '0 , 0'
-    if loc_str2 == '' or loc_str2 == ' ':
+    if loc_str2 == '' or loc_str2 == ' ' or loc_str2 == 'nul':
         loc_str2 = '0 , 0'
     offset1 = loc_str1.find(',')
-    latt1 = float(loc_str1[:offset1].strip())
-    lonn1 = float(loc_str1[offset1+1:].strip())
+    try:
+        latt1 = float(loc_str1[:offset1].strip())
+        # lonn1 = float(loc_str1[offset1+1:].strip())
+    except ValueError :
+        latt1 = 0
+    try:
+        # latt1 = float(loc_str1[:offset1].strip())
+        lonn1 = float(loc_str1[offset1+1:].strip())
+    except ValueError :
+        lonn1 = 0
+    offset2 = loc_str2.find(',')
+    try:
+        latt2 = float(loc_str2[:offset2].strip())
+    except ValueError :
+        latt2 = 0
+    try:
+        lonn2 = float(loc_str2[offset2+1:].strip())
+    except ValueError :
+        lonn2 = 0
+
+
     # print("latt ",latt1)
     # print("lonn ",lonn1)
-    offset2 = loc_str2.find(',')
-    latt2 = float(loc_str2[:offset2].strip())
-    lonn2 = float(loc_str2[offset2+1:].strip())
+
+    # latt2 = float(loc_str2[:offset2].strip())
+    # lonn2 = float(loc_str2[offset2+1:].strip())
     # print("latt ",latt2)
     # print("lonn ",lonn2)
     hav_distance = get_difference(latt1,lonn1, latt2,lonn2)
