@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+from decouple import config
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -76,31 +78,13 @@ WSGI_APPLICATION = 'DoWellMaps.wsgi.application'
 
 
 # Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
 DATABASES = {
-    #  'default': {
-    #          'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
-    #          'NAME': 'location_search_1',    # mysql database name.
-    #          'USER': 'root',   # db login user name.
-    #          'PASSWORD': 'pass123456', # db login user password.
-    #          'HOST': '', # db machine ip or domain, if left empty then the value is localhost.
-    #          'PORT': '3306', # db server listening port number
-    #      }
-        #  {
-        #     'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
-        #      'NAME': '100086$dowell_map_api',    # mysql database name.
-        #      'USER': '100086',   # db login user name.
-        #      'PASSWORD': 'dowell@msql#db', # db login user password.
-        #      'HOST': '100086.mysql.pythonanywhere-services.com', # db machine ip or domain, if left empty then the value is localhost.
-        #     #  'PORT': '3306', # db server listening port number
-        #  }
 'default': {
              'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
-             'NAME': '100086$dowell_map_api',    # mysql database name.
-             'USER': '100086',   # db login user name.
-             'PASSWORD': 'dowell@msql#db', # db login user password.
-             'HOST': '100086.mysql.pythonanywhere-services.com', # db machine ip or domain, if left empty then the value is localhost.
+             'NAME': config("DB_NAME"),    # mysql database name.
+             'USER': config("DB_USER"),   # db login user name.
+             'PASSWORD': config("DB_PASS"), # db login user password.
+             'HOST': config("DB_HOST"), # db machine ip or domain, if left empty then the value is localhost.
             #  'PORT': '3306', # db server listening port number
          }
 }
@@ -137,6 +121,16 @@ USE_I18N = True
 USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "https://dowelllabs.github.io/",
+    "http://localhost:3000/"
+]
+# CORS_ALLOWED_ORIGINS = [
+#   "*"
+# ]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 

@@ -11,14 +11,15 @@ error_message = ""
 ## T
 class CustomError(Exception):
     pass
-def get_data(api_key, fil = False ):
+def get_data(api_key, fil = False, payment=False ):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
     data = {
                         "api_key":api_key,
                         "operation":"fetch",
                         "db_name":"dowellmap",
-                        "coll_name":"my_map"
+                        "coll_name":"my_map",
+                        "payment":payment
                         }
     if fil:
         data[ "filters"]=json.dumps(fil)
@@ -43,7 +44,7 @@ def get_data(api_key, fil = False ):
     else:
         res_data = {"success":False, "status_code":r.status_code, "text":json.loads(r.text)['message']}
     return res_data
-def insert_data(api_key,data):
+def insert_data(api_key,data, payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
     payload = {
@@ -51,7 +52,8 @@ def insert_data(api_key,data):
                         "operation":"insert",
                         "db_name":"dowellmap",
                         "coll_name":"my_map",
-                        "data":data
+                        "data":data,
+                        "payment": payment
                         }
 
     content_length = len(json.dumps(payload))
@@ -74,7 +76,7 @@ def insert_data(api_key,data):
         res_data = {"success":False, "status_code":r.status_code, "text":raw_data['message']}
     return res_data
 
-def update_data(api_key,id,data, replace_group_list = False ):
+def update_data(api_key,id,data, replace_group_list = False,  payment=False ):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
     concat_data = data
@@ -92,6 +94,7 @@ def update_data(api_key,id,data, replace_group_list = False ):
                         "coll_name":"my_map",
                         "query": {"_id": id },
 					    "update_data": concat_data,
+					    "payment":payment
                         }
 
     content_length = len(json.dumps(payload))
@@ -113,7 +116,7 @@ def update_data(api_key,id,data, replace_group_list = False ):
         raw_data =  json.loads(r.text)
         res_data = {"success":False, "status_code":r.status_code, "text":raw_data['message']}
     return res_data
-def delete_data(api_key,fil):
+def delete_data(api_key,fil , payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
 
@@ -123,6 +126,7 @@ def delete_data(api_key,fil):
                         "db_name":"dowellmap",
                         "coll_name":"my_map",
                         "query": fil,
+                        "payment":payment
                         }
 
     content_length = len(json.dumps(payload))
@@ -182,10 +186,14 @@ class GetLocations(APIView):
                     "coll_name":"my_map"
                 }
             myDict = request.data
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+
             if "filters" in myDict:
-                res = get_data(api_key, myDict['filters'])
+                res = get_data(api_key, myDict['filters'], payment)
             else:
-                res = get_data(api_key)
+                res = get_data(api_key, payment)
             if res['success']:
                 wanted_dets = res['data']
             else:
@@ -211,9 +219,13 @@ class CreateUserProfile(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key=""
             myDict = request.data
             username = myDict['username']
-            check_res = get_data(api_key,{"username":username,"doc_type":"master"})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_res = get_data(api_key,{"username":username,"doc_type":"master"}, payment)
             res = {}
             if len(check_res['data']) == 0:
                 data = {
@@ -246,10 +258,14 @@ class CreateLocGroup(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
             group_name = myDict['group_name']
-            check_res = get_data(api_key,{"username":username,"doc_type":"master"})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_res = get_data(api_key,{"username":username,"doc_type":"master"}, payment)
             res = {}
             if len(check_res['data']) == 0:
                 error_message = "User does not exist!"
@@ -260,7 +276,7 @@ class CreateLocGroup(APIView):
                 data = {
                     "group_list":[group_name]
                 }
-                update_res = update_data(api_key,id,data )
+                update_res = update_data(api_key,id,data , payment)
                 if update_res['success']:
                     res = update_res
                 else:
@@ -283,13 +299,20 @@ class CreateLocation(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
             group_name = myDict['group_name']
             loc_detail = myDict['loc_detail']
-            check_res = get_data(api_key,{"username":username,"doc_type":"master"})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_res = get_data(api_key,{"username":username,"doc_type":"master"}, payment)
             res = {}
-            if len(check_res['data']) == 0:
+            if not check_res['success']:
+                error_message = check_res['text']
+                raise CustomError(error_message)
+            if 'data' in check_res and len(check_res['data']) == 0:
                 error_message = "User does not exist!"
                 raise CustomError(error_message)
 
@@ -300,7 +323,8 @@ class CreateLocation(APIView):
                         "group_name":group_name,
                         "loc_details":loc_detail
                         }
-                res = insert_data(api_key,data )
+
+                res = insert_data(api_key,data, payment )
                 if not res['success']:
                     error_message = res['text']
                     raise CustomError(error_message)
@@ -322,11 +346,15 @@ class UpdateLocGroup(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
             old_name = myDict['old_group_name']
             new_group_name = myDict['new_group_name']
-            check_res = get_data(api_key,{"username":username})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_res = get_data(api_key,{"username":username}, payment)
             res = {}
             if len(check_res['data']) == 0:
                 error_message = "User does not exist!"
@@ -344,9 +372,9 @@ class UpdateLocGroup(APIView):
                                 i['group_list'][j]  = new_group_name
                                 break
                         res = update_data(api_key,i["_id"],{"group_list":i['group_list'],
-                                                                 "recover_list":i['recover_list'],},True )
+                                                                 "recover_list":i['recover_list'],},True, payment )
                     else:
-                        res = update_data(api_key,i["_id"],{"group_name":new_group_name} )
+                        res = update_data(api_key,i["_id"],{"group_name":new_group_name}, payment )
                     if not res['success']:
                         error_message = res['text']
                         raise CustomError(error_message)
@@ -366,11 +394,15 @@ class UpdateLocation(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             # username = myDict['username']
             new_loc_details = myDict['new_loc_detail']
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
             id = myDict['loc_id']
-            check_res = get_data(api_key,{"_id":id})
+            check_res = get_data(api_key,{"_id":id}, payment)
             res = {}
             if len(check_res['data']) == 0:
                 error_message = "Location does not exist!"
@@ -379,7 +411,7 @@ class UpdateLocation(APIView):
             else:
                 temp_data = check_res["data"][0]
                 temp_data['loc_details'] = new_loc_details
-                res = update_data(api_key,temp_data["_id"],{"loc_details":new_loc_details} )
+                res = update_data(api_key,temp_data["_id"],{"loc_details":new_loc_details}, payment )
                 if not res['success']:
                     error_message = res['text']
                     raise CustomError(error_message)
@@ -400,9 +432,13 @@ class DeleteUserProfile(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
-            res = delete_data(api_key, {"username":username})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            res = delete_data(api_key, {"username":username}, payment)
             if not res['success']:
                 error_message = res['text']
                 raise CustomError(error_message)
@@ -421,10 +457,14 @@ class DeleteLocGroup(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
             group_name = myDict['group_name']
-            check_user = get_data(api_key, {"username":username, "doc_type":"master"})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_user = get_data(api_key, {"username":username, "doc_type":"master"}, payment)
 
             if not check_user["success"]:
                 error_message = check_user['text']
@@ -432,11 +472,11 @@ class DeleteLocGroup(APIView):
             culprit_list = check_user['data'][0]['group_list']
             if group_name in culprit_list:
                 culprit_list.remove(group_name)
-            update_res = update_data(api_key, check_user['data'][0]['_id'],{"group_list":culprit_list}, True)
+            update_res = update_data(api_key, check_user['data'][0]['_id'],{"group_list":culprit_list}, True, payment)
             if not update_res["success"]:
                 error_message = update_res['text']
                 raise CustomError(error_message)
-            res = delete_data(api_key, {"username":username, "group_name":group_name})
+            res = delete_data(api_key, {"username":username, "group_name":group_name}, payment)
             if not res['success']:
                 error_message = res['text']
                 raise CustomError(error_message)
@@ -457,10 +497,14 @@ class DeleteLocation(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             # username = myDict['username']
             id = myDict['id']
-            res = delete_data(api_key,{"_id":id})
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            res = delete_data(api_key,{"_id":id}, payment)
             if not res['success']:
                 error_message = res['text']
                 raise CustomError(error_message)
@@ -482,9 +526,13 @@ class SyncGroups(APIView):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
         try:
             api_key = self.request.query_params.get("api_key")
+            # api_key = ""
             myDict = request.data
             username = myDict['username']
-            check_res = snyc_groups(username, api_key)
+            payment =  False
+            if "payment" in myDict:
+                payment = myDict['payment']
+            check_res = snyc_groups(username, api_key, payment)
             res = {}
             if check_res['success']:
                 res = check_res

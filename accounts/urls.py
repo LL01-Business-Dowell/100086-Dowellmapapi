@@ -2,6 +2,7 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from accounts import views
 from accounts import data_cube_views
+from accounts import health_check_views
 urlpatterns = [
     path('get-details/',views.GetPlaceDetails.as_view()),
     path('get-details-list/',views.GetPlaceDetailsList.as_view()),
@@ -32,5 +33,8 @@ urlpatterns = [
 
     # path('continents/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.ContinentList.as_view()),
     # path('countries/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.CountryList.as_view()),
+    ##health_check
+    path('health-check/', health_check_views.HealthCheck.as_view(), name='health-check'),
+
 ]
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])

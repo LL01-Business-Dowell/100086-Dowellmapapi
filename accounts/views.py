@@ -63,7 +63,7 @@ def get_event_id():
         return eventId
     else:
         return json.loads(r.text)['error']
-def retrieve_details(results_1, plc_id, is_test_data, center_loc = ""):
+def retrieve_details(results_1, plc_id, is_test_data, center_loc = "", change_to_utf_8= False):
     place_id_ = plc_id
     place_name = 'None'
     category = 'None'
@@ -122,24 +122,45 @@ def retrieve_details(results_1, plc_id, is_test_data, center_loc = ""):
 
     else:
         error = True
-    template = {
-    "placeId":place_id_,
-    'place_name': place_name,
-    'category': category,
-    'address': address,
-    'location_coord': str(lat) + " , "+str(lng),
-    'day_hours': open_hrs,
-    'phone': int_number,
-    'website': website,
-     "photo_reference":photo_reference,
-     "rating":rating,
-    "type_of_data": "scraped",
-    # "distance_from_center":distance_from_center,
-    "is_test_data": is_test_data,
-        "eventId": eventId,
-        "error": error
+    if change_to_utf_8:
+        template = {
+        "placeId":place_id_.encode('utf-8'),
+        'place_name': place_name.encode('utf-8'),
+        'category': category.encode('utf-8'),
+        'address': address.encode('utf-8'),
+        'location_coord': str(lat) + " , "+str(lng),
+        'day_hours': open_hrs.encode('utf-8'),
+        'phone': int_number.encode('utf-8'),
+        'website': website.encode('utf-8'),
+         "photo_reference":photo_reference,
+         "rating":rating,
+        "type_of_data": "scraped",
+        # "distance_from_center":distance_from_center,
+        "is_test_data": is_test_data,
+            "eventId": eventId,
+            "error": error
 
-        }
+            }
+    else:
+
+        template = {
+        "placeId":place_id_,
+        'place_name': place_name,
+        'category': category,
+        'address': address,
+        'location_coord': str(lat) + " , "+str(lng),
+        'day_hours': open_hrs,
+        'phone': int_number,
+        'website': website,
+         "photo_reference":photo_reference,
+         "rating":rating,
+        "type_of_data": "scraped",
+        # "distance_from_center":distance_from_center,
+        "is_test_data": is_test_data,
+            "eventId": eventId,
+            "error": error
+
+            }
     return template
 
 class CustomError(Exception):
@@ -294,6 +315,9 @@ class GetPlaceDetailsListStage1(APIView):
 
         try:
             wanted_api_key = myDict['api_key']
+            change_to_utf_8 = False
+            if 'change_to_utf_8'in myDict:
+                change_to_utf_8 = (bool(myDict['change_to_utf_8']))
             print("wanted_api_key ------>>> ", wanted_api_key)
             type_error_message = "Invalid key."
             if wanted_api_key != default_key:
@@ -312,7 +336,10 @@ class GetPlaceDetailsListStage1(APIView):
                 # print("raw results new stage 1============")
                 # print(results)
                 # if center_loc != 'None':
-                resp = retrieve_details(results, plc_id, True, center_loc)
+                if change_to_utf_8:
+                    resp = retrieve_details(results, plc_id, True, center_loc, True)
+                else:
+                    resp = retrieve_details(results, plc_id, True, center_loc)
                 if not resp['error']:
                     result_list.append(resp)
                     total_succ_queried.append(plc_id)
