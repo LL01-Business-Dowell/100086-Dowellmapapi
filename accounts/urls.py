@@ -2,20 +2,21 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from accounts import views
 from accounts import data_cube_views
+from accounts import data_cube_views_maptracker as dcvm
 from accounts import health_check_views
 urlpatterns = [
-    path('get-details/',views.GetPlaceDetails.as_view()),
-    path('get-details-list/',views.GetPlaceDetailsList.as_view()),
-    path('get-details-list-stage1/',views.GetPlaceDetailsListStage1.as_view()),
-    path('save-places-detail/',views.SavePlacesDetail.as_view()),
-    path('verify-place-ids/',views.VerifyPlaceIds.as_view()),
-    path('get-local-nearby/',views.GetNearbyPlacesLocally.as_view()),
-    path('get-local-nearby-v2/',views.GetNearbyPlacesLocallyV2.as_view()),
-    path('refresh-json-dh/',views.refresh_json_dh, name='refresh-json-dh'),
-    path('show-mongo-data/',views.show_mongo_data, name='show-mongo-data'),
-    path('show-json-data/',views.show_json_data, name='show-json-data'),
-    path('get-hav-distance/',views.TestLocalDistance.as_view()),
-    path('get-categories/',views.GetCategories.as_view()),
+    path('get-details/', views.GetPlaceDetails.as_view()),
+    path('get-details-list/', views.GetPlaceDetailsList.as_view()),
+    path('get-details-list-stage1/', views.GetPlaceDetailsListStage1.as_view()),
+    path('save-places-detail/', views.SavePlacesDetail.as_view()),
+    path('verify-place-ids/', views.VerifyPlaceIds.as_view()),
+    path('get-local-nearby/', views.GetNearbyPlacesLocally.as_view()),
+    path('get-local-nearby-v2/', views.GetNearbyPlacesLocallyV2.as_view()),
+    path('refresh-json-dh/', views.refresh_json_dh, name='refresh-json-dh'),
+    path('show-mongo-data/', views.show_mongo_data, name='show-mongo-data'),
+    path('show-json-data/', views.show_json_data, name='show-json-data'),
+    path('get-hav-distance/', views.TestLocalDistance.as_view()),
+    path('get-categories/', views.GetCategories.as_view()),
     path('get-locs/', data_cube_views.GetLocations.as_view()),
     path('create-profile/', data_cube_views.CreateUserProfile.as_view()),
     path('create-loc-group/', data_cube_views.CreateLocGroup.as_view()),
@@ -26,6 +27,20 @@ urlpatterns = [
     path('delete-loc-group/', data_cube_views.DeleteLocGroup.as_view()),
     path('delete-loc/', data_cube_views.DeleteLocation.as_view()),
     path('sync-groups/', data_cube_views.SyncGroups.as_view()),
+    # Map tracker
+    path('create-workspace/', dcvm.CreateWorkspace.as_view()),
+    path('get-workspace/', dcvm.GetWorkspace.as_view()),
+    path('update-workspace/', dcvm.UpdateWorkspace.as_view()),
+    path('delete-workspace/', dcvm.DeleteWorkspace.as_view()),
+    path('create-current-loc/', dcvm.CreateLocationData.as_view()),
+    path('get-current-loc/', dcvm.GetLocationData.as_view()),
+    # path('update-current-loc/', dcvm.UpdateLocation.as_view()),
+    path('delete-current-loc/', dcvm.DeleteLocationData.as_view()),
+
+
+
+
+
     #     path('', views.home),
     #     path('home/', views.api, name='home'),
 
@@ -33,8 +48,9 @@ urlpatterns = [
 
     # path('continents/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.ContinentList.as_view()),
     # path('countries/<slug:username>/<slug:sessionId>/<slug:projectCode>/', views.CountryList.as_view()),
-    ##health_check
-    path('health-check/', health_check_views.HealthCheck.as_view(), name='health-check'),
+    # health_check
+    path('health-check/', health_check_views.HealthCheck.as_view(),
+         name='health-check'),
 
 ]
 urlpatterns = format_suffix_patterns(urlpatterns, allowed=['json', 'html'])
