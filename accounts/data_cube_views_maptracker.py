@@ -17,6 +17,38 @@ class CustomError(Exception):
 ### MAJOR FUNCTIONS ###
 
 
+def joiner(new_, old_):
+    result = dict()
+    # result["team_list"] = list(set(old_["team_list"] + new_["team_list"]))
+    # result["teams"] = {**new_['teams'], **old_['teams']}
+    # print(result["teams"])
+    print("new_ -->", new_)
+    print("old_ -->", old_)
+
+    # Update dict1 into merged_dict
+    for key, value in old_.items():
+        if key in result:
+            if isinstance(result[key], list) and isinstance(value, list):
+                result[key].extend(value)
+            else:
+                result[key] = [result[key], value]
+        else:
+            result[key] = value
+
+    # Update dict2 into merged_dict
+    for key, value in new_.items():
+        if key in result:
+            if isinstance(result[key], list) and isinstance(value, list):
+                result[key].extend(value)
+            else:
+                result[key] = [result[key], value]
+        else:
+            result[key] = value
+
+    print("in Joiner----------->", result)
+    return result
+
+
 def insert_data(api_key, data, payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
@@ -39,7 +71,7 @@ def insert_data(api_key, data, payment=False):
     headers = {"Content-Type": "application/json",
                "Content-Length": str(len(payload))}
     r = requests.post(url, json=payload)
-    print("data ------------->", payload)
+    # print("data ------------->", payload)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -48,7 +80,7 @@ def insert_data(api_key, data, payment=False):
         res_data = {"status_code": r.status_code,
                     "text": raw_data['message'], "success": True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->", raw_data)
+        # print("raw_data------------->", raw_data)
     else:
         raw_data = json.loads(r.text)
         res_data = {"success": False, "status_code": r.status_code,
@@ -78,7 +110,7 @@ def get_data(api_key, fil=False, payment=False):
     headers = {"Content-Type": "application/json",
                "Content-Length": str(len(data))}
     r = requests.get(url, data=data)
-    print("data ------------->", data)
+    # print("data ------------->", data)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -86,7 +118,7 @@ def get_data(api_key, fil=False, payment=False):
         raw_data = json.loads(r.text)['data']
         res_data = {"data": raw_data, "success": True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->", raw_data)
+        # print("raw_data------------->", raw_data)
     else:
         res_data = {"success": False, "status_code": r.status_code,
                     "text": json.loads(r.text)['message']}
@@ -101,14 +133,14 @@ def update_data(api_key, id, data, update_fields, payment=False):
     for i in update_fields:
         if i in ["users_list", "team_list"]:
             concat_data[i] = list(set(old_data["data"][0][i] + data[i]))
-        if i == "teams_list":
+        if i == "team_list":
             if "teams" in data:
-                for k in data[i]:
-                    if k in old_data["teams"]:
-                        concat_data["teams"][k] = list(
-                            set(old_data["data"][0]["teams"][k] + data["teams"][k]))
-                    else:
-                        concat_data["teams"][k] = data["teams"][k]
+                print("<------- Teams Package -------> ")
+                if len(old_data["data"][0]["teams"]) == 0:
+                    old_data["data"][0]["teams"] = {}
+                concat_data["teams"] = joiner(
+                    old_data["data"][0]["teams"], data["teams"])
+
         # print("concat_data ==> ", concat_data)
     print("concat_data ==> ", concat_data)
     payload = {
@@ -227,6 +259,7 @@ class CreateWorkspace(APIView):
             check_res = get_data(
                 api_key, {"username": username, "workspace_id": workspace_id, "doc_type": "master"}, payment)
             res = {}
+            print(check_res)
             if len(check_res['data']) == 0:
                 data = {
                     "username": username,
@@ -303,12 +336,12 @@ class UpdateWorkspace(APIView):
             username = myDict['username']
             workspace_id = myDict['workspace_id']
             update_fields = myDict['update_fields']
-            update_data = myDict['update_data']
+            data = myDict['update_data']
             if "teams" in update_fields:
                 if "team_list" not in update_fields:
                     raise CustomError(
                         "Team list field missing for the teams sent.")
-                if len(update_data['team_list']) != len(update_data['teams']):
+                if len(data['team_list']) != len(data['teams']):
                     raise CustomError(
                         "Some team names do not match up with the list given. Compare your team list and the teams sent")
             payment = False
@@ -331,7 +364,7 @@ class UpdateWorkspace(APIView):
                 if doc_id:
                     # update_data(api_key, id, data, update_fields, payment=False)
                     res = update_data(
-                        api_key, doc_id, update_data, update_fields, payment)
+                        api_key, doc_id, data, update_fields, payment)
                     if not res['success']:
                         error_message = res['text']
                         raise CustomError(error_message)
@@ -402,12 +435,33 @@ class CreateLocationData(APIView):
             api_key = self.request.query_params.get("api_key")
             # api_key=""
             myDict = request.data
+            if 'username' not in myDict:
+                error_message = "Username missing. Include username and then try again!"
+                raise CustomError(error_message)
             username = myDict['username']
+            if 'workspace_id' not in myDict:
+                error_message = "workspace_id missing. Include workspace_id and then try again!"
+                raise CustomError(error_message)
             workspace_id = myDict['workspace_id']
+            if 'team_status' not in myDict:
+                error_message = "team_status missing. Include team_status and then try again!"
+                raise CustomError(error_message)
             team_status = myDict["team_status"]
+            if 'lat' not in myDict:
+                error_message = "lat missing. Include lat and then try again!"
+                raise CustomError(error_message)
             lat = myDict['lat']
+            if 'lon' not in myDict:
+                error_message = "lon missing. Include lon and then try again!"
+                raise CustomError(error_message)
             lon = myDict['lon']
+            if 'timestamp' not in myDict:
+                error_message = "timestamp missing. Include timestamp and then try again!"
+                raise CustomError(error_message)
             timestamp = myDict['timestamp']
+            if 'master_username' not in myDict:
+                error_message = "master_username missing. Include master_username and then try again!"
+                raise CustomError(error_message)
             # user_device = myDict['user_device']
             team_list = []
             master_username = myDict['master_username']
@@ -423,9 +477,13 @@ class CreateLocationData(APIView):
             if len(check_res['data']) == 0:
                 data = {}
                 if team_status:
+                    print("Teams status is true")
+                    # old_data = get_data("")
+
                     data = {
                         "username": username,
                         "workspace_id": workspace_id,
+                        "master_username": master_username,
                         "doc_type": "slave",
                         "lat": lat,
                         "lon": lon,
@@ -434,10 +492,11 @@ class CreateLocationData(APIView):
                         "team_list": team_list
                     }
                 else:
-
+                    print("Teams status is false")
                     data = {
                         "username": username,
                         "workspace_id": workspace_id,
+                        "master_username": master_username,
                         "doc_type": "slave",
                         "lat": lat,
                         "lon": lon,

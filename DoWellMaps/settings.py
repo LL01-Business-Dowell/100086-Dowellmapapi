@@ -79,14 +79,15 @@ WSGI_APPLICATION = 'DoWellMaps.wsgi.application'
 
 # Database
 DATABASES = {
-'default': {
-             'ENGINE': 'django.db.backends.mysql', # mysql database python driver.
-             'NAME': config("DB_NAME"),    # mysql database name.
-             'USER': config("DB_USER"),   # db login user name.
-             'PASSWORD': config("DB_PASS"), # db login user password.
-             'HOST': config("DB_HOST"), # db machine ip or domain, if left empty then the value is localhost.
-            #  'PORT': '3306', # db server listening port number
-         }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # mysql database python driver.
+        'NAME': config("DB_NAME"),    # mysql database name.
+        'USER': config("DB_USER"),   # db login user name.
+        'PASSWORD': config("DB_PASS"),  # db login user password.
+        # db machine ip or domain, if left empty then the value is localhost.
+        'HOST': config("DB_HOST"),
+        #  'PORT': '3306', # db server listening port number
+    }
 }
 
 
@@ -121,13 +122,15 @@ USE_I18N = True
 USE_TZ = True
 
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "https://dowelllabs.github.io/",
-    "http://localhost:3000/"
-]
+# CORS_ALLOWED_ORIGINS = [
+#     "http://localhost:5173",
+#     "http://localhost:5174",
+#     "http://localhost:5175",
+#     "https://dowelllabs.github.io/",
+#     "http://localhost:3000/"
+# ]
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
 # CORS_ALLOWED_ORIGINS = [
 #   "*"
 # ]
