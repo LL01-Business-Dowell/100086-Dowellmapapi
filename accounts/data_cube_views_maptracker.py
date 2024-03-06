@@ -459,12 +459,12 @@ class CreateLocationData(APIView):
                 error_message = "timestamp missing. Include timestamp and then try again!"
                 raise CustomError(error_message)
             timestamp = myDict['timestamp']
-            if 'master_username' not in myDict:
-                error_message = "master_username missing. Include master_username and then try again!"
-                raise CustomError(error_message)
+            # if 'master_username' not in myDict:
+            #     error_message = "master_username missing. Include master_username and then try again!"
+            #     raise CustomError(error_message)
             # user_device = myDict['user_device']
             team_list = []
-            master_username = myDict['master_username']
+            # master_username = myDict['master_username']
             payment = False
             if "payment" in myDict:
                 payment = myDict['payment']
@@ -483,7 +483,7 @@ class CreateLocationData(APIView):
                     data = {
                         "username": username,
                         "workspace_id": workspace_id,
-                        "master_username": master_username,
+                        # "master_username": master_username,
                         "doc_type": "slave",
                         "lat": lat,
                         "lon": lon,
@@ -496,7 +496,7 @@ class CreateLocationData(APIView):
                     data = {
                         "username": username,
                         "workspace_id": workspace_id,
-                        "master_username": master_username,
+                        # "master_username": master_username,
                         "doc_type": "slave",
                         "lat": lat,
                         "lon": lon,
