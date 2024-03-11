@@ -216,30 +216,70 @@ def delete_data(api_key, fil, payment=False):
 
 def insert_loc_data_handler(myDataList, api_key):
     response_list = list()
+    dub_list = list()
+    response = dict()
+    success = False
+    partial_success = False
+    error_message="Succefull Cruise!"
     for myDict in myDataList:
+        if "user_id" in myDict:
+            user_id = myDict['user_id']
+        else:
+            user_id = ""
         if 'username' not in myDict:
             error_message = "Username missing. Include username and then try again!"
-            raise CustomError(error_message)
+
+            print("error message---",error_message)
+            # raise CustomError(error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # return {"success":success, "partial_success":partial_success, "message":error_message}
         username = myDict['username']
         if 'workspace_id' not in myDict:
             error_message = "workspace_id missing. Include workspace_id and then try again!"
-            raise CustomError(error_message)
+            print("error message====",error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # raise CustomError(error_message)
+            # return {"success":success, "partial_success":partial_success, "message":error_message}
         workspace_id = myDict['workspace_id']
         if 'team_status' not in myDict:
             error_message = "team_status missing. Include team_status and then try again!"
-            raise CustomError(error_message)
+            print("error message -----",error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # raise CustomError(error_message)
+            # return {"success":success, "partial_success":partial_success, "message":error_message}
         team_status = myDict["team_status"]
         if 'lat' not in myDict:
             error_message = "lat missing. Include lat and then try again!"
-            raise CustomError(error_message)
+            print("error message------------",error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # raise CustomError(error_message)
+            # return {"success":success, "partial_success":partial_success,"message":error_message}
         lat = myDict['lat']
         if 'lon' not in myDict:
             error_message = "lon missing. Include lon and then try again!"
-            raise CustomError(error_message)
+            print("error message-------",error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # raise CustomError(error_message)
+            # return {"success":success, "partial_success":partial_success, "message":error_message}
         lon = myDict['lon']
         if 'timestamp' not in myDict:
             error_message = "timestamp missing. Include timestamp and then try again!"
-            raise CustomError(error_message)
+            print("error message-----",error_message)
+            dub_list.append( myDict)
+            partial_success = True
+            continue
+            # raise CustomError(error_message)
+            # return {"success":success, "partial_success":partial_success, "message":error_message}
         timestamp = myDict['timestamp']
         # if 'master_username' not in myDict:
         #     error_message = "master_username missing. Include master_username and then try again!"
@@ -271,6 +311,8 @@ def insert_loc_data_handler(myDataList, api_key):
                     "lon": lon,
                     "timestamp": timestamp,
                     "team_status": True,
+                    "payment": payment,
+                    "user_id":user_id,
                     "team_list": team_list
                 }
             else:
@@ -283,15 +325,26 @@ def insert_loc_data_handler(myDataList, api_key):
                     "lat": lat,
                     "lon": lon,
                     "timestamp": timestamp,
+                    "user_id":user_id,
+                    "payment":payment,
                     "team_status": False
                 }
 
             res = insert_data(api_key, data)
             response_list.append(res)
         else:
-            error_message = "Location already inserted!"
-            raise CustomError(error_message)
-    return response_list
+            # print("dublicate data from db ====",check_res)
+            # print("dublicate data from user ====",myDict)
+            dub_list.append( myDict)
+            error_message = "Locations already inserted!"
+
+            # print("error message",error_message)
+            partial_success = True
+            # raise CustomError(error_message)
+    if not partial_success:
+        success = True
+    response = {"success":success, "partial_success":partial_success,"message":error_message, "issue_list":dub_list}
+    return response
     # wanted_dets.extend(get_data(payload))
     # res = {"Coords": "Kindly wait api in maintenance. Thank you for your patience"}
 ### VIEWS ###
@@ -522,10 +575,20 @@ class CreateLocationData(APIView):
             wanted_payload_list = myDict["payload"]
             # api_key=""
             results = insert_loc_data_handler(wanted_payload_list, api_key)
-            r = {"data": results}
-            res["results"] = json.dumps(r)
 
-            return Response(res, status=status.HTTP_200_OK)
+            if results["success"]:
+                r = {"message": results["message"],"success":results["success"]}
+                res["results"] = json.dumps(r)
+                return Response(res, status=status.HTTP_200_OK)
+            elif results["partial_success"]:
+                error_message = results["message"]
+                r = {"partial_success":True, "message" :error_message, "issue_list":results["issue_list"]}
+                res["results"] = json.dumps(r)
+                return Response(res, status=status.HTTP_207_MULTI_STATUS)
+            else:
+                error_message = results["message"]
+                raise CustomError(error_message)
+
         except CustomError:
             return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
         except Http404:

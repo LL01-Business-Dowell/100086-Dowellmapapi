@@ -2,7 +2,7 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from accounts import views
 from accounts import data_cube_views
-from accounts import data_cube_views_maptracker as dcvm
+from accounts import data_cube_views_maptracker
 from accounts import health_check_views
 urlpatterns = [
     path('get-details/', views.GetPlaceDetails.as_view()),
@@ -28,14 +28,14 @@ urlpatterns = [
     path('delete-loc/', data_cube_views.DeleteLocation.as_view()),
     path('sync-groups/', data_cube_views.SyncGroups.as_view()),
     # Map tracker
-    path('create-workspace/', dcvm.CreateWorkspace.as_view()),
-    path('get-workspace/', dcvm.GetWorkspace.as_view()),
-    path('update-workspace/', dcvm.UpdateWorkspace.as_view()),
-    path('delete-workspace/', dcvm.DeleteWorkspace.as_view()),
-    path('create-current-loc/', dcvm.CreateLocationData.as_view()),
-    path('get-current-loc/', dcvm.GetLocationData.as_view()),
-    # path('update-current-loc/', dcvm.UpdateLocation.as_view()),
-    path('delete-current-loc/', dcvm.DeleteLocationData.as_view()),
+    path('create-workspace/', data_cube_views_maptracker.CreateWorkspace.as_view()),
+    path('get-workspace/', data_cube_views_maptracker.GetWorkspace.as_view()),
+    path('update-workspace/', data_cube_views_maptracker.UpdateWorkspace.as_view()),
+    path('delete-workspace/', data_cube_views_maptracker.DeleteWorkspace.as_view()),
+    path('create-current-loc/', data_cube_views_maptracker.CreateLocationData.as_view()),
+    path('get-current-loc/', data_cube_views_maptracker.GetLocationData.as_view()),
+    path('update-current-loc/', data_cube_views_maptracker.UpdateLocation.as_view()),
+    path('delete-current-loc/', data_cube_views_maptracker.DeleteLocationData.as_view()),
 
 
 
