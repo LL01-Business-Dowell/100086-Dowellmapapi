@@ -229,7 +229,7 @@ def insert_loc_data_handler(myDataList, api_key):
         if 'username' not in myDict:
             error_message = "Username missing. Include username and then try again!"
 
-            print("error message---",error_message)
+            # print("error message---",error_message)
             # raise CustomError(error_message)
             dub_list.append( myDict)
             partial_success = True
@@ -238,7 +238,7 @@ def insert_loc_data_handler(myDataList, api_key):
         username = myDict['username']
         if 'workspace_id' not in myDict:
             error_message = "workspace_id missing. Include workspace_id and then try again!"
-            print("error message====",error_message)
+            # print("error message====",error_message)
             dub_list.append( myDict)
             partial_success = True
             continue
@@ -247,7 +247,7 @@ def insert_loc_data_handler(myDataList, api_key):
         workspace_id = myDict['workspace_id']
         if 'team_status' not in myDict:
             error_message = "team_status missing. Include team_status and then try again!"
-            print("error message -----",error_message)
+            # print("error message -----",error_message)
             dub_list.append( myDict)
             partial_success = True
             continue
@@ -256,7 +256,7 @@ def insert_loc_data_handler(myDataList, api_key):
         team_status = myDict["team_status"]
         if 'lat' not in myDict:
             error_message = "lat missing. Include lat and then try again!"
-            print("error message------------",error_message)
+            # print("error message------------",error_message)
             dub_list.append( myDict)
             partial_success = True
             continue
@@ -265,7 +265,7 @@ def insert_loc_data_handler(myDataList, api_key):
         lat = myDict['lat']
         if 'lon' not in myDict:
             error_message = "lon missing. Include lon and then try again!"
-            print("error message-------",error_message)
+            # print("error message-------",error_message)
             dub_list.append( myDict)
             partial_success = True
             continue
@@ -274,7 +274,7 @@ def insert_loc_data_handler(myDataList, api_key):
         lon = myDict['lon']
         if 'timestamp' not in myDict:
             error_message = "timestamp missing. Include timestamp and then try again!"
-            print("error message-----",error_message)
+            # print("error message-----",error_message)
             dub_list.append( myDict)
             partial_success = True
             continue
@@ -578,13 +578,13 @@ class CreateLocationData(APIView):
 
             if results["success"]:
                 r = {"message": results["message"],"success":results["success"]}
-                res["results"] = json.dumps(r)
-                return Response(res, status=status.HTTP_200_OK)
+                # res["results"] = json.dumps(r)
+                return Response(r , status=status.HTTP_200_OK)
             elif results["partial_success"]:
                 error_message = results["message"]
                 r = {"partial_success":True, "message" :error_message, "issue_list":results["issue_list"]}
-                res["results"] = json.dumps(r)
-                return Response(res, status=status.HTTP_207_MULTI_STATUS)
+                # res["results"] = json.dumps(r)
+                return Response(r, status=status.HTTP_200_OK)
             else:
                 error_message = results["message"]
                 raise CustomError(error_message)
