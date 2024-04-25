@@ -336,6 +336,11 @@ class GetPlaceDetailsListStage1(APIView):
                 # print("raw results new stage 1============")
                 # print(results)
                 # if center_loc != 'None':
+                if r.status_code == 400:
+                    # result = json.loads(res.text)
+                    type_error_message = type_error_message + " "+result["message"]
+                    # raise CustomError(type_error_message)
+                    return Response(type_error_message,status=status.HTTP_400_BAD_REQUEST)
                 if change_to_utf_8:
                     resp = retrieve_details(results, plc_id, True, center_loc, True)
                 else:
@@ -737,6 +742,11 @@ class GetNearbyPlacesLocallyV2(APIView):
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
         except Http404:
             return Response("Kindly check your query inputs", status=status.HTTP_400_BAD_REQUEST)
+        except Exception as ex:
+            template = "An exception of type {0} occurred. Arguments:\n{1!r}"
+            message = template.format(type(ex).__name__, ex.args)
+            print ("Realll Errrooo ----> ",message)
+            return Response("API queries_quota exceeded.", status=status.HTTP_400_BAD_REQUEST)
 
 
 def show_mongo_data(request):

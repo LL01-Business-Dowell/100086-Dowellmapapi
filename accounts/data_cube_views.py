@@ -32,7 +32,7 @@ def get_data(api_key, fil = False, payment=False ):
     # headers = {"Content-Length": str(content_length)}
     headers = {"Content-Type": "application/json", "Content-Length": str(len(data))}
     r=requests.get(url,data=data)
-    print("data ------------->",data)
+    # print("data ------------->",data)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -40,7 +40,7 @@ def get_data(api_key, fil = False, payment=False ):
         raw_data =  json.loads(r.text)['data']
         res_data = {"data":raw_data, "success":True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->",raw_data)
+        # print("raw_data------------->",raw_data)
     else:
         res_data = {"success":False, "status_code":r.status_code, "text":json.loads(r.text)['message']}
     return res_data
@@ -62,7 +62,7 @@ def insert_data(api_key,data, payment=False):
     # headers = {"Content-Length": str(content_length)}
     headers = {"Content-Type": "application/json", "Content-Length": str(len(payload))}
     r=requests.post(url,json=payload)
-    print("data ------------->",payload)
+    # print("data ------------->",payload)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -70,7 +70,7 @@ def insert_data(api_key,data, payment=False):
         raw_data =  json.loads(r.text)
         res_data = {"status_code":r.status_code, "text":raw_data['message'], "success":True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->",raw_data)
+        # print("raw_data------------->",raw_data)
     else:
         raw_data =  json.loads(r.text)
         res_data = {"success":False, "status_code":r.status_code, "text":raw_data['message']}
@@ -81,12 +81,12 @@ def update_data(api_key,id,data, replace_group_list = False,  payment=False ):
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
     concat_data = data
     if "group_list" in data and not replace_group_list:
-        print("group_list was there")
+        # print("group_list was there")
         old_data = get_data(api_key, fil={"_id":id})
-        print("old_data ==> ", old_data)
+        # print("old_data ==> ", old_data)
         concat_data['group_list'] = list(set(old_data['data'][0]["group_list"] +data['group_list']))
         # print("concat_data ==> ", concat_data)
-    print("concat_data ==> ", concat_data)
+    # print("concat_data ==> ", concat_data)
     payload = {
                         "api_key":api_key,
                         "operation":"update",
@@ -103,7 +103,7 @@ def update_data(api_key,id,data, replace_group_list = False,  payment=False ):
     # headers = {"Content-Length": str(content_length)}
     headers = {"Content-Type": "application/json", "Content-Length": str(len(payload))}
     r=requests.put(url,json=payload)
-    print("data ------------->",payload)
+    # print("data ------------->",payload)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -111,7 +111,7 @@ def update_data(api_key,id,data, replace_group_list = False,  payment=False ):
         raw_data =  json.loads(r.text)
         res_data = {"status_code":r.status_code, "text":raw_data['message'], "success":True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->",raw_data)
+        # print("raw_data------------->",raw_data)
     else:
         raw_data =  json.loads(r.text)
         res_data = {"success":False, "status_code":r.status_code, "text":raw_data['message']}
@@ -135,15 +135,15 @@ def delete_data(api_key,fil , payment=False):
     # headers = {"Content-Length": str(content_length)}
     headers = {"Content-Type": "application/json", "Content-Length": str(len(payload))}
     r=requests.delete(url,json=payload)
-    print("data ------------->",payload)
-    print("response.status------------->",r.status_code)
-    print("r.text------------->",r.text)
+    # print("data ------------->",payload)
+    # print("response.status------------->",r.status_code)
+    # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
     if r.status_code == 201 or r.status_code == 200 or r.status_code == 405:
         raw_data =  json.loads(r.text)
         res_data = {"status_code":r.status_code, "text":raw_data['message'], "success":True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->",raw_data)
+        # print("raw_data------------->",raw_data)
     else:
         raw_data =  json.loads(r.text)
         res_data = {"success":False, "status_code":r.status_code, "text":raw_data['message']}

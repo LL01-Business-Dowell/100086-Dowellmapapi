@@ -22,8 +22,8 @@ def joiner(new_, old_):
     # result["team_list"] = list(set(old_["team_list"] + new_["team_list"]))
     # result["teams"] = {**new_['teams'], **old_['teams']}
     # print(result["teams"])
-    print("new_ -->", new_)
-    print("old_ -->", old_)
+    # print("new_ -->", new_)
+    # print("old_ -->", old_)
 
     # Update dict1 into merged_dict
     for key, value in old_.items():
@@ -135,14 +135,14 @@ def update_data(api_key, id, data, update_fields, payment=False):
             concat_data[i] = list(set(old_data["data"][0][i] + data[i]))
         if i == "team_list":
             if "teams" in data:
-                print("<------- Teams Package -------> ")
+                # print("<------- Teams Package -------> ")
                 if len(old_data["data"][0]["teams"]) == 0:
                     old_data["data"][0]["teams"] = {}
                 concat_data["teams"] = joiner(
                     old_data["data"][0]["teams"], data["teams"])
 
         # print("concat_data ==> ", concat_data)
-    print("concat_data ==> ", concat_data)
+    # print("concat_data ==> ", concat_data)
     payload = {
         "api_key": api_key,
         "operation": "update",
@@ -160,7 +160,7 @@ def update_data(api_key, id, data, update_fields, payment=False):
     headers = {"Content-Type": "application/json",
                "Content-Length": str(len(payload))}
     r = requests.put(url, json=payload)
-    print("data ------------->", payload)
+    # print("data ------------->", payload)
     # print("response.status------------->",response.status)
     # print("r.text------------->",r.text)
     # print("r.message------------->",r.message)
@@ -169,7 +169,7 @@ def update_data(api_key, id, data, update_fields, payment=False):
         res_data = {"status_code": r.status_code,
                     "text": raw_data['message'], "success": True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->", raw_data)
+        # print("raw_data------------->", raw_data)
     else:
         raw_data = json.loads(r.text)
         res_data = {"success": False, "status_code": r.status_code,
@@ -197,16 +197,16 @@ def delete_data(api_key, fil, payment=False):
     headers = {"Content-Type": "application/json",
                "Content-Length": str(len(payload))}
     r = requests.delete(url, json=payload)
-    print("data ------------->", payload)
-    print("response.status------------->", r.status_code)
-    print("r.text------------->", r.text)
+    # print("data ------------->", payload)
+    # print("response.status------------->", r.status_code)
+    # print("r.text------------->", r.text)
     # print("r.message------------->",r.message)
     if r.status_code == 201 or r.status_code == 200 or r.status_code == 405:
         raw_data = json.loads(r.text)
         res_data = {"status_code": r.status_code,
                     "text": raw_data['message'], "success": True}
         # raw_keys = raw_data.keys()
-        print("raw_data------------->", raw_data)
+        # print("raw_data------------->", raw_data)
     else:
         raw_data = json.loads(r.text)
         res_data = {"success": False, "status_code": r.status_code,
@@ -299,7 +299,7 @@ def insert_loc_data_handler(myDataList, api_key):
         if len(check_res['data']) == 0:
             data = {}
             if team_status:
-                print("Teams status is true")
+                # print("Teams status is true")
                 # old_data = get_data("")
 
                 data = {
@@ -316,7 +316,7 @@ def insert_loc_data_handler(myDataList, api_key):
                     "team_list": team_list
                 }
             else:
-                print("Teams status is false")
+                # print("Teams status is false")
                 data = {
                     "username": username,
                     "workspace_id": workspace_id,
