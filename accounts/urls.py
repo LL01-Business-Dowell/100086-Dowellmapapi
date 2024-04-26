@@ -4,6 +4,7 @@ from accounts import views
 from accounts import data_cube_views
 from accounts import data_cube_views_maptracker
 from accounts import health_check_views
+from . import subscription_operation_views
 urlpatterns = [
     path('get-details/', views.GetPlaceDetails.as_view()),
     path('get-details-list/', views.GetPlaceDetailsList.as_view()),
@@ -36,6 +37,7 @@ urlpatterns = [
     path('get-current-loc/', data_cube_views_maptracker.GetLocationData.as_view()),
     path('update-current-loc/', data_cube_views_maptracker.UpdateLocation.as_view()),
     path('delete-current-loc/', data_cube_views_maptracker.DeleteLocationData.as_view()),
+    path('subs-operation/', subscription_operation_views.SubscriptionOperations.as_view()),
 
 
 
