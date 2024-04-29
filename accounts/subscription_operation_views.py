@@ -88,6 +88,7 @@ def get_data(api_key, workspace_id, fil=False, payment=False):
 class SubscriptionOperations(APIView):
     def post(self, request, format=None):
         api_key = self.request.query_params.get("api_key")
+        print('data ', request.data)
         response_list = list()
         dat= request.data
         workspace_id = dat['workspace_id']
@@ -136,3 +137,28 @@ class SubscriptionOperations(APIView):
         print('results ', response_list)
         return Response(response_list)
     
+    
+    
+class SubscriptionsGetOperations(APIView):
+    def post(self, request, format=None):
+        api_key = self.request.query_params.get("api_key")
+        response_list = list()
+        dat= request.data
+        workspace_id = dat['workspace_id']
+        # lat = dat['lat']
+        # long = dat['long']
+        # qr_Code = dat["qr_code"]
+        
+        
+        # data = {
+        #     workspace_id: workspace_id,
+        #     lat:lat,
+        #     long: long,
+        #     qr_Code: qr_Code
+        # }
+        
+        
+        res = get_data(api_key, workspace_id)
+        response_list.append(res)
+        print('results ', response_list)
+        return Response(response_list)
