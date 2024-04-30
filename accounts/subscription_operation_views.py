@@ -6,8 +6,8 @@ from rest_framework import status
 import requests
 import datetime
 import json
-      
-        
+
+
 def insert_data(api_key, data, payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
     url = "https://datacube.uxlivinglab.online/db_api/crud/"
@@ -93,14 +93,14 @@ class SubscriptionOperations(APIView):
         dat= request.data
         workspace_id = dat['workspace_id']
         lat = dat['lat']
-        long = dat['long']
+        long_ = dat['long']
         qr_code = dat['qr_code']
-        
-        
+
+
         data = {
             "workspace_id": workspace_id,
             "lat":lat,
-            "long": long,
+            "long": long_,
             "qr_code": qr_code
         }
         print('api_key ', api_key)
@@ -109,11 +109,11 @@ class SubscriptionOperations(APIView):
         response_list.append(res)
         print('response',response_list)
         return Response(response_list)
-        
-        
-        
-        
-        
+
+
+
+
+
     def get(self, request, format=None):
         api_key = self.request.query_params.get("api_key")
         response_list = list()
@@ -122,23 +122,23 @@ class SubscriptionOperations(APIView):
         # lat = dat['lat']
         # long = dat['long']
         # qr_Code = dat["qr_code"]
-        
-        
+
+
         # data = {
         #     workspace_id: workspace_id,
         #     lat:lat,
         #     long: long,
         #     qr_Code: qr_Code
         # }
-        
-        
+
+
         res = get_data(api_key, workspace_id)
         response_list.append(res)
         print('results ', response_list)
         return Response(response_list)
-    
-    
-    
+
+
+
 class SubscriptionsGetOperations(APIView):
     def post(self, request, format=None):
         api_key = self.request.query_params.get("api_key")
@@ -148,16 +148,16 @@ class SubscriptionsGetOperations(APIView):
         # lat = dat['lat']
         # long = dat['long']
         # qr_Code = dat["qr_code"]
-        
-        
+
+
         # data = {
         #     workspace_id: workspace_id,
         #     lat:lat,
         #     long: long,
         #     qr_Code: qr_Code
         # }
-        
-        
+
+
         res = get_data(api_key, workspace_id)
         response_list.append(res)
         print('results ', response_list)
