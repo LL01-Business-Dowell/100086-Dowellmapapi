@@ -39,6 +39,7 @@ urlpatterns = [
     path('delete-current-loc/', data_cube_views_maptracker.DeleteLocationData.as_view()),
     path('subs-operation/', subscription_operation_views.SubscriptionOperations.as_view()),
     path('subs-get-operation/', subscription_operation_views.SubscriptionsGetOperations.as_view()),
+    path('subs-delete-operation/', subscription_operation_views.SubscriptionDeleteOperations.as_view()),
 
 
 
