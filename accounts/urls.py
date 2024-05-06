@@ -40,6 +40,7 @@ urlpatterns = [
     path('subs-operation/', subscription_operation_views.SubscriptionOperations.as_view()),
     path('subs-get-operation/', subscription_operation_views.SubscriptionsGetOperations.as_view()),
     path('subs-delete-operation/', subscription_operation_views.SubscriptionDeleteOperations.as_view()),
+    path('subs-update-operation/', subscription_operation_views.SubscriptionUpdateOperations.as_view()),
 
 
 
