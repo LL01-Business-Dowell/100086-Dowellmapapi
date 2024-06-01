@@ -1,12 +1,13 @@
 from django.shortcuts import render
 import requests
 import json
+from decouple import config
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 # from accounts.data_cube_views_maptracker import insert_data, get_data, delete_data
 from api.utils import insert_data, get_data
-api_key = "1b834e07-c68b-4bf6-96dd-ab7cdc62f07f"
+api_key = config("API_KEY")
 
 # --------------------------------------------------------------------------------------------------------
 # CLASS ATTENDANCE ENDPOINTS
