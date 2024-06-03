@@ -7,7 +7,6 @@ from rest_framework.response import Response
 from rest_framework import status
 # from accounts.data_cube_views_maptracker import insert_data, get_data, delete_data
 from api.utils import insert_data, get_data
-api_key = config("API_KEY")
 
 # --------------------------------------------------------------------------------------------------------
 # CLASS ATTENDANCE ENDPOINTS
@@ -16,6 +15,7 @@ class ClassAttendanceView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         payload = request.data
         payload.update({"doc_type": "attendance"})
 
@@ -27,6 +27,7 @@ class FetchClassAttendanceByClassNameView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         class_name = request.data.get('class_name')
         date = request.data.get('datetime')
         
@@ -41,6 +42,7 @@ class FetchClassAttendanceByWorkspaceView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         workspace_id = request.data.get('workspace_id')
         date = request.data.get('datetime')
         
@@ -57,6 +59,7 @@ class BusAttendanceView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         payload = request.data
         payload.update({"doc_type": "attendance"})
 
@@ -69,6 +72,7 @@ class FetchBusAttendanceByBusNameView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         bus_name = request.data.get('bus_name')
         date = request.data.get('datetime')
         
@@ -83,6 +87,7 @@ class FetchBusAttendanceByWorkspaceView(APIView):
         return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
     
     def post(self, request):
+        api_key = self.request.query_params.get("api_key")
         workspace_id = request.data.get('workspace_id')
         date = request.data.get('datetime')
         
