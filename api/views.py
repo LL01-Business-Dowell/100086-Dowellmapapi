@@ -12,7 +12,9 @@ from api.utils import insert_data, get_data
 # CLASS ATTENDANCE ENDPOINTS
 class ClassAttendanceView(APIView):
     def get(self, request):
-        return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
+        api_key = self.request.query_params.get("api_key")
+        response = get_data(api_key, collection="class_attendance")
+        return Response(response, status=status.HTTP_200_OK)
     
     def post(self, request):
         api_key = self.request.query_params.get("api_key")
@@ -56,7 +58,9 @@ class FetchClassAttendanceByWorkspaceView(APIView):
 # BUS ATTENDANCE ENDPOINTS
 class BusAttendanceView(APIView):
     def get(self, request):
-        return Response({"data": "Kindly use a POST request instead of GET"}, status=status.HTTP_200_OK)
+        api_key = self.request.query_params.get("api_key")
+        response = get_data(api_key, collection="bus_attendance")
+        return Response(response, status=status.HTTP_200_OK)
     
     def post(self, request):
         api_key = self.request.query_params.get("api_key")

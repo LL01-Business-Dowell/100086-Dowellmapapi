@@ -47,10 +47,10 @@ def get_data(api_key, collection, fil=False, payment=False):
         "api_key": api_key,
         "operation": "fetch",
         "db_name": "student_management",
-        "coll_name": collection,
-        # "filters":json.dumps({"name":{"$regex":substr}})
-        "filters": json.dumps(fil),
+        "coll_name": collection
     }
+    if fil:
+        data["filters"] = json.dumps(fil)
 
     wanted_dets = list()
 
