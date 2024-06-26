@@ -167,15 +167,13 @@ class SubscriptionOperations(APIView):
             qr_code = dat['qr_code']
 
             subscriber_name = dat['subscriber_name']
-            waste_weight = dat['waste_weight']
 
             data = {
                 "workspace_id": workspace_id,
                 "lat":lat,
                 "long": long_,
                 "qr_code": qr_code,
-                "subscriber_name": subscriber_name,
-                "waste_weight": waste_weight
+                "subscriber_name": subscriber_name
             }
             print('api_key ', api_key)
             print('this is data ', data)
@@ -287,9 +285,6 @@ class SubscriptionUpdateOperations(APIView):
 
             if "subscriber_name" in myDict:
                 subscriber_name = myDict["subscriber_name"]
-
-            if "waste_weight" in myDict:
-                waste_weight = myDict["waste_weight"]
                 
             # if len(qr_code):
             #     culprit_dict["qr_code"] = qr_code
