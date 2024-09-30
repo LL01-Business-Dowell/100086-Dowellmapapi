@@ -350,7 +350,7 @@ class KioskAPIView(APIView):
     @login_required
     def update_Kiosk_details(self, request):
         _id = request.data.get("_id")
-        update_data = request.data.dict()
+        update_data = request.data["data"]
         update_kiosk_response = json.loads(
             datacube_data_update(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
                                  {"_id": _id}, update_data))
