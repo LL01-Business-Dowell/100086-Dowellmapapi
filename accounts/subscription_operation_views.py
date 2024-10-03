@@ -6,11 +6,15 @@ from rest_framework import status
 import requests
 import datetime
 import json
-
+error_message = ""
+## T
+class CustomError(Exception):
+    pass
 
 def insert_data(api_key, data, payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
-    url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    # url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    url = "https://www.dowelldatacube.uxlivinglab.online/db_api/crud/"
     ts = datetime.datetime.now().timestamp()
     time_data = {"create_time_stamp": str(ts)}
     data.update(time_data)
@@ -48,7 +52,8 @@ def insert_data(api_key, data, payment=False):
 
 def get_data(api_key, workspace_id, fil=False, payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
-    url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    # url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    url = "https://www.dowelldatacube.uxlivinglab.online/db_api/crud/"
     data = {
         "api_key": api_key,
         "operation": "fetch",
@@ -86,7 +91,8 @@ def get_data(api_key, workspace_id, fil=False, payment=False):
 
 def delete_data(api_key,fil , payment=False):
     # url = "https://74.50.86.117/db_api/crud/"
-    url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    # url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    url = "https://www.dowelldatacube.uxlivinglab.online/db_api/crud/"
 
     payload = {
                         "api_key":api_key,
@@ -119,7 +125,8 @@ def delete_data(api_key,fil , payment=False):
 
 def update_data(api_key,id,data,   payment=False ):
     # url = "https://74.50.86.117/db_api/crud/"
-    url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    # url = "https://datacube.uxlivinglab.online/db_api/crud/"
+    url = "https://www.dowelldatacube.uxlivinglab.online/db_api/crud/"
         # print("concat_data ==> ", concat_data)
     # print("concat_data ==> ", concat_data)
     payload = {
@@ -129,9 +136,9 @@ def update_data(api_key,id,data,   payment=False ):
                         "operation":"update",
                         "query": {"workspace_id": id },
 					    "update_data": data,
-					    
+
                         }
-    
+
     print('update payload ', payload)
     content_length = len(json.dumps(payload))
 
@@ -166,14 +173,12 @@ class SubscriptionOperations(APIView):
             long_ = dat['long']
             qr_code = dat['qr_code']
 
-            subscriber_name = dat['subscriber_name']
 
             data = {
                 "workspace_id": workspace_id,
                 "lat":lat,
                 "long": long_,
-                "qr_code": qr_code,
-                "subscriber_name": subscriber_name
+                "qr_code": qr_code
             }
             print('api_key ', api_key)
             print('this is data ', data)
@@ -181,12 +186,11 @@ class SubscriptionOperations(APIView):
             response_list.append(res)
             print('response',response_list)
             return Response(response_list)
-        except Exception as e:
-            # print(e)
+        except:
             return Response('Error')
 
 
-    
+
 class SubscriptionDeleteOperations(APIView):
     def post(self, request, format=None):
         error_message = "Kindly cross check the payload and parameters. If problem persists contact your admin"
@@ -245,10 +249,10 @@ class SubscriptionsGetOperations(APIView):
             return Response(response_list)
         except:
             return Response('Error Occured')
-    
-    
-    
-    
+
+
+
+
 
 class SubscriptionUpdateOperations(APIView):
     def post(self, request, format = None):
@@ -257,14 +261,14 @@ class SubscriptionUpdateOperations(APIView):
             api_key = self.request.query_params.get("api_key")
             # api_key = ""
             myDict = request.data
-            
-            
-            
+
+
+
             # for key, value in myDict.items():
             #     if value:  # Check if the value is not empty
             #         formdata[key] = value
-                    
-                    
+
+
             workspace_id = ""
             id = myDict['workspace_id']
             qr_code = ""
@@ -276,21 +280,18 @@ class SubscriptionUpdateOperations(APIView):
                 workspace_id = myDict['workspace_id']
             if "qr_code" in myDict:
                 qr_code = myDict['qr_code']
-                
+
             if "lat" in myDict:
                 lat = myDict["lat"]
-                
+
             if "long" in myDict:
                 lat = myDict["long"]
 
-            if "subscriber_name" in myDict:
-                subscriber_name = myDict["subscriber_name"]
-                
             # if len(qr_code):
             #     culprit_dict["qr_code"] = qr_code
             # if len(workspace_id):
             #     culprit_dict["workspace_id"] = workspace_id
-                
+
             print('data ', myDict)
             res = update_data(api_key, id=id, data=myDict)
             if not res['success']:
@@ -298,7 +299,7 @@ class SubscriptionUpdateOperations(APIView):
                 print('Errors', error_message)
                 raise CustomError(error_message)
             return Response(res,status=status.HTTP_200_OK)
-        
+
         except CustomError:
             return Response(error_message, status=status.HTTP_400_BAD_REQUEST)
         except Http404:
