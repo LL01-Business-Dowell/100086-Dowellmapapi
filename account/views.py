@@ -218,12 +218,11 @@ class UserManagement(APIView):
                     {"_id": _id},
                     updated_data
                 ))
-
                 message = user_update.get("message")
                 return Response({
                     "success": True,
-                    "message": message
-                }, status=status.HTTP_204_NO_CONTENT)
+                    "message": "user profile data successfully",
+                }, status=status.HTTP_200_OK)
             else:
                 data = {
                     "_id": existing_user_data["_id"],
