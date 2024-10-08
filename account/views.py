@@ -75,6 +75,7 @@ class UserManagement(APIView):
         password = request.data.get("password")
         latitude = request.data.get("latitude")
         longitude = request.data.get("longitude")
+        role = request.data.get("role")
 
         serializer = UserAuthSerializer(data=request.data)
         if not serializer.is_valid():
@@ -114,7 +115,11 @@ class UserManagement(APIView):
                     "member_type": data["portfolio_info"]["member_type"],
                     "data_type": data["portfolio_info"]["data_type"],
                     "operations_right": data["portfolio_info"]["operations_right"],
-                    "status": data["portfolio_info"]["status"]
+                    "status": data["portfolio_info"]["status"],
+                    "latitude": latitude,
+                    "longitude": longitude,
+                    "role":role
+
                 }
             ))
 
@@ -135,7 +140,10 @@ class UserManagement(APIView):
                 "member_type": data["portfolio_info"]["member_type"],
                 "data_type": data["portfolio_info"]["data_type"],
                 "operations_right": data["portfolio_info"]["operations_right"],
-                "status": data["portfolio_info"]["status"]
+                "status": data["portfolio_info"]["status"],
+                "latitude": latitude,
+                "longitude": longitude,
+                "role": role
             }
 
             message = "User created successfully"
@@ -145,6 +153,7 @@ class UserManagement(APIView):
                 "_id": existing_user_data["_id"],
                 **user_info,
                 "email": existing_user_data["email"],
+                "role": existing_user_data.get("role",""),
                 "profile_image": existing_user_data["profile_image"],
                 "workspace_id": existing_user_data["workspace_id"],
                 "workspace_owner_name": existing_user_data["workspace_owner_name"],
@@ -152,7 +161,9 @@ class UserManagement(APIView):
                 "member_type": existing_user_data["member_type"],
                 "data_type": existing_user_data["data_type"],
                 "operations_right": existing_user_data["operations_right"],
-                "status": existing_user_data["status"]
+                "status": existing_user_data["status"],
+                "latitude": existing_user_data.get("latitude",""),
+                "longitude": existing_user_data.get("longitude","")
             }
 
             message = "User authenticated successfully"
@@ -234,7 +245,11 @@ class UserManagement(APIView):
                     "member_type": existing_user_data["member_type"],
                     "data_type": existing_user_data["data_type"],
                     "operations_right": existing_user_data["operations_right"],
-                    "status": existing_user_data["status"]
+                    "status": existing_user_data["status"],
+                    "role": existing_user_data["role"],
+                    "latitude": existing_user_data["latitude"],
+                    "longitude": existing_user_data["longitude"],
+
                 }
 
                 message = "Nothing to update"
