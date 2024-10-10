@@ -284,6 +284,10 @@ class KioskAPIView(APIView):
             return self.update_Kiosk_details(request)
         elif type == 'delete_Kiosk_details':
             return self.delete_Kiosk_details(request)
+        elif type == 'get_user_kiosks':
+            return self.get_user_kiosk_details(request)
+        elif type == 'get_all_kiosks':
+            return self.get_all_kiosks(request)
         else:
             return Response({
                 "success": False,
@@ -395,6 +399,62 @@ class KioskAPIView(APIView):
             return Response({
                 "success": False,
                 "message": "Error deleting kiosk"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    @login_required
+    def get_user_kiosk_details(self, request):
+        user_id = request.data.get("user_id")
+        # Query to get kiosks for a specific user
+        existing_kiosk_response = json.loads(
+            datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+                                    {"user_id": user_id}, 10000, 0, False))
+        if existing_kiosk_response:
+            user_kiosks = existing_kiosk_response["data"]
+            # Adding LatLng data
+            for kiosk in user_kiosks:
+                latitude = kiosk.get('latitude')
+                longitude = kiosk.get('longitude')
+                if latitude is not None and longitude is not None:
+                    kiosk['LatLng'] = f"{latitude},{longitude}"
+                else:
+                    kiosk['LatLng'] = "Data Not Available"
+
+
+            return Response({
+                "success": True,
+                "data": user_kiosks
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "success": False,
+                "message": "No kiosks found for this user"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+    @login_required
+    def get_all_kiosks(self, request):
+        # Fetching all kiosks for any user
+        all_kiosks_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+                                    {}, 10000, 0, False))  # Empty filter to get all records
+        print(all_kiosks_response)
+        if all_kiosks_response:
+            all_kiosks = all_kiosks_response["data"]
+            # Adding LatLng data
+            for kiosk in all_kiosks:
+                latitude = kiosk.get('latitude')
+                longitude = kiosk.get('longitude')
+                if latitude is not None and longitude is not None:
+                    kiosk['LatLng'] = f"{latitude},{longitude}"
+                else:
+                    kiosk['LatLng'] = "Data Not Available"
+
+            return Response({
+                "success": True,
+                "data": all_kiosks
+            }, status=status.HTTP_200_OK)
+        else:
+            return Response({
+                "success": False,
+                "message": "No kiosks available"
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
