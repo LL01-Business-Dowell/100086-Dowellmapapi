@@ -100,7 +100,7 @@ class UserManagement(APIView):
             "portfolio": portfolio
         }
 
-        existing_user_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management", user_info, 10000, 0, False))
+        existing_user_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management", user_info, 50000, 0, False))
         existing_user = existing_user_response.get('data', [])
 
         if not existing_user:
