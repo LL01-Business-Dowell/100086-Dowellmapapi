@@ -28,7 +28,6 @@ def dowell_login(workspace_name, username, password):
         response.raise_for_status()  # Ensure valid HTTP response
         data = response.json()
 
-        print("DEBUG: API response data:", data)  # Debugging log
 
         # Ensure response contains expected fields
         if not data or "userinfo" not in data or "portfolio_info" not in data:

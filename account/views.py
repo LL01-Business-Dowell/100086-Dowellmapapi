@@ -176,7 +176,7 @@ class UserManagement(APIView):
 
             message = "User authenticated successfully"
 
-        print("DEBUG: Location data before saving:", latitude, longitude, data["workspace_id"])
+
         if latitude and longitude:
             try:
                 response_location = json.loads(save_location_data(
@@ -186,9 +186,10 @@ class UserManagement(APIView):
                     userId=data["portfolio_username"],
                     event="login"
                 ))
-                print("DEBUG: Location save response:", response_location)
+                print(response_location)
             except Exception as e:
                 print(f"Location save failed: {e}")
+                pass
 
         token = jwt_utils.generate_jwt_tokens(data)
         return Response({
