@@ -25,12 +25,24 @@ def dowell_login(workspace_name, username, password):
     }
     try:
         response = requests.post(url, json=payload)
-        response.raise_for_status()
+        response.raise_for_status()  # Ensure valid HTTP response
+        data = response.json()
+
+        print("DEBUG: API response data:", data)  # Debugging log
+
+        # Ensure response contains expected fields
+        if not data or "userinfo" not in data or "portfolio_info" not in data:
+            return {
+                "success": False,
+                "message": "Invalid login credentials"
+            }
+
         return {
             "success": True,
             "message": "Login successful",
-            "response": response.json()
+            "response": data
         }
+
     except requests.exceptions.HTTPError as http_err:
         return {
             "success": False,

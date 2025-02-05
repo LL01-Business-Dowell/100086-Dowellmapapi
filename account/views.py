@@ -85,26 +85,35 @@ class UserManagement(APIView):
                 "errors": serializer.errors,
             }, status=status.HTTP_400_BAD_REQUEST)
 
+        # Call `dowell_login` function
         client_admin_login_response = dowell_login(workspace_name, portfolio, password)
+        print("DEBUG: API response data1:", client_admin_login_response)  # Log actual API response
 
-        # return Response(client_admin_login_response)
-        if not client_admin_login_response.get("success") or client_admin_login_response.get("response") == 0:
+        # Check if login was successful
+        if not client_admin_login_response.get("success"):
             return Response({
                 "success": False,
                 "message": client_admin_login_response.get("message", "Authentication failed")
             }, status=status.HTTP_401_UNAUTHORIZED)
 
+        # Extract user info if login was successful
         data = client_admin_login_response.get("response", {})
+
         user_info = {
             "workspace_name": workspace_name,
             "portfolio": portfolio
         }
 
-        existing_user_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management", user_info, 50000, 0, False))
+        existing_user_response = json.loads(datacube_data_retrieval(api_key, 
+            "63f3173b44719d743f213102_dowell_survey_database", 
+            "voc_user_management", user_info, 50000, 0, False))
+        
         existing_user = existing_user_response.get('data', [])
 
         if not existing_user:
-            create_user_response = json.loads(datacube_data_insertion(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management",
+            create_user_response = json.loads(datacube_data_insertion(api_key, 
+                "63f3173b44719d743f213102_dowell_survey_database", 
+                "voc_user_management",
                 {
                     **user_info,
                     "email": "",
@@ -118,8 +127,7 @@ class UserManagement(APIView):
                     "status": data["portfolio_info"]["status"],
                     "latitude": latitude,
                     "longitude": longitude,
-                    "role":role
-
+                    "role": role
                 }
             ))
 
@@ -153,7 +161,7 @@ class UserManagement(APIView):
                 "_id": existing_user_data["_id"],
                 **user_info,
                 "email": existing_user_data["email"],
-                "role": existing_user_data.get("role",""),
+                "role": existing_user_data.get("role", ""),
                 "profile_image": existing_user_data["profile_image"],
                 "workspace_id": existing_user_data["workspace_id"],
                 "workspace_owner_name": existing_user_data["workspace_owner_name"],
@@ -162,12 +170,13 @@ class UserManagement(APIView):
                 "data_type": existing_user_data["data_type"],
                 "operations_right": existing_user_data["operations_right"],
                 "status": existing_user_data["status"],
-                "latitude": existing_user_data.get("latitude",""),
-                "longitude": existing_user_data.get("longitude","")
+                "latitude": existing_user_data.get("latitude", ""),
+                "longitude": existing_user_data.get("longitude", "")
             }
 
             message = "User authenticated successfully"
-        print(latitude, longitude, data["workspace_id"])
+
+        print("DEBUG: Location data before saving:", latitude, longitude, data["workspace_id"])
         if latitude and longitude:
             try:
                 response_location = json.loads(save_location_data(
@@ -177,11 +186,9 @@ class UserManagement(APIView):
                     userId=data["portfolio_username"],
                     event="login"
                 ))
-                print(response_location)
+                print("DEBUG: Location save response:", response_location)
             except Exception as e:
                 print(f"Location save failed: {e}")
-
-                pass
 
         token = jwt_utils.generate_jwt_tokens(data)
         return Response({
