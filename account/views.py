@@ -306,7 +306,7 @@ class KioskAPIView(APIView):
     def get_Kiosk_details(self, request):
         _id = request.data.get("_id")
         existing_kiosk_response = json.loads(
-            datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
+            datacube_data_retrieval(api_key, "kiosk_db", "kiosk",
                                     {"_id": _id}, 10000, 0, False))
         if existing_kiosk_response:
             return Response({
@@ -332,7 +332,7 @@ class KioskAPIView(APIView):
         longitude = request.data.get("longitude")
 
         create_kiosk_response = json.loads(
-            datacube_data_insertion(api_key, "kiosk_db", "voc_kiosk_management",
+            datacube_data_insertion(api_key, "kiosk_db", "kiosk",
                                     {
                                         "user_id": user_id,
                                         "name": name,
@@ -378,7 +378,7 @@ class KioskAPIView(APIView):
         _id = request.data.get("_id")
         update_data = request.data["data"]
         update_kiosk_response = json.loads(
-            datacube_data_update(api_key, "kiosk_db", "voc_kiosk_management",
+            datacube_data_update(api_key, "kiosk_db", "kiosk",
                                  {"_id": _id}, update_data))
         if update_kiosk_response.get("success"):
             return Response({
@@ -396,7 +396,7 @@ class KioskAPIView(APIView):
     def delete_Kiosk_details(self, request):
         _id = request.data.get("_id")
         delete_kiosk_response = json.loads(
-            datacube_data_delete(api_key, "kiosk_db", "voc_kiosk_management",
+            datacube_data_delete(api_key, "kiosk_db", "kiosk",
                                    {"_id": _id}))
         if delete_kiosk_response.get("success"):
             return Response({
@@ -414,7 +414,7 @@ class KioskAPIView(APIView):
         user_id = request.data.get("user_id")
         # Query to get kiosks for a specific user
         existing_kiosk_response = json.loads(
-            datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
+            datacube_data_retrieval(api_key, "kiosk_db", "kiosk",
                                     {"user_id": user_id}, 10000, 0, False))
         if existing_kiosk_response:
             user_kiosks = existing_kiosk_response["data"]
@@ -441,7 +441,7 @@ class KioskAPIView(APIView):
     @login_required
     def get_all_kiosks(self, request):
         # Fetching all kiosks for any user
-        all_kiosks_response = json.loads(datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
+        all_kiosks_response = json.loads(datacube_data_retrieval(api_key, "kiosk_db", "kiosk",
                                     {}, 10000, 0, False))  # Empty filter to get all records
         print(all_kiosks_response)
         if all_kiosks_response:

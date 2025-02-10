@@ -13,10 +13,8 @@ import googlemaps
 from decouple import config
 import traceback
 
-
 api_key = config("API_KEY")
 default_key =  config("API_KEY")
-
 
 # Create your views here.
 import time

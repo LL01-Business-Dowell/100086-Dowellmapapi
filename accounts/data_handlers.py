@@ -14,6 +14,7 @@ id_directory =  os.path.join(BASE_DIR, 'json__id_data')
 plc_id_file_name =  os.path.join(id_directory, "id_json_data.json")
 api_key = config("API_KEY")
 
+
 print('api_key')
 try:
     client = googlemaps.Client(key=api_key)
