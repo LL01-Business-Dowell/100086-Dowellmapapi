@@ -171,3 +171,43 @@ def upload_qr_code_image(img, file_name):
         except Exception as err:
             print(f'Unexpected error: {err}')
         return None
+    
+
+
+CREATE_DATABASE_URL = "https://datacube.uxlivinglab.online/api/create_database/"
+ADD_COLLECTION_URL = "https://datacube.uxlivinglab.online/api/add_collection/"
+
+def create_database(db_name, collections):
+    """
+    Creates a new database with collections.
+
+    :param db_name: Name of the new database
+    :param collections: List of collections with their field structures
+    :return: API response
+    """
+    url = CREATE_DATABASE_URL
+    payload = {
+        "db_name": db_name,
+        "collections": collections
+    }
+
+    response = requests.post(url, json=payload)
+    return response.json()
+
+
+def add_collection(database_id, collections):
+    """
+    Adds a new collection to an existing database.
+
+    :param database_id: ID of the database where the collection should be added
+    :param collections: List of collections with their field structures
+    :return: API response
+    """
+    url = ADD_COLLECTION_URL
+    payload = {
+        "database_id": database_id,
+        "collections": collections
+    }
+
+    response = requests.post(url, json=payload)
+    return response.json()

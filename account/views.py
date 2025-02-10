@@ -48,7 +48,7 @@ class UserManagement(APIView):
                 "success": False,
                 "message": "Refresh token expired"
             }, status=status.HTTP_401_UNAUTHORIZED)
-        user_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management", {"_id": decoded_payload["_id"]}, 0, 0, False))
+        user_response = json.loads(datacube_data_retrieval(api_key, "kiosk_db", "kiosk", {"_id": decoded_payload["_id"]}, 0, 0, False))
 
         if not user_response['success']:
             return Response({
@@ -105,15 +105,15 @@ class UserManagement(APIView):
         }
 
         existing_user_response = json.loads(datacube_data_retrieval(api_key, 
-            "63f3173b44719d743f213102_dowell_survey_database", 
-            "voc_user_management", user_info, 50000, 0, False))
+            "kiosk_db", 
+            "kiosk", user_info, 50000, 0, False))
         
         existing_user = existing_user_response.get('data', [])
 
         if not existing_user:
             create_user_response = json.loads(datacube_data_insertion(api_key, 
-                "63f3173b44719d743f213102_dowell_survey_database", 
-                "voc_user_management",
+                "kiosk_db", 
+                "kiosk",
                 {
                     **user_info,
                     "email": "",
@@ -204,7 +204,7 @@ class UserManagement(APIView):
     def update_userprofile(self, request):
         _id = request.data.get("_id")
 
-        existing_user_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_user_management", {"_id": _id}, 10000, 0, False))
+        existing_user_response = json.loads(datacube_data_retrieval(api_key, "kiosk_db", "kiosk", {"_id": _id}, 10000, 0, False))
         existing_user = existing_user_response.get('data', [])
 
         if existing_user:
@@ -232,8 +232,8 @@ class UserManagement(APIView):
 
                 user_update = json.loads(datacube_data_update(
                     api_key,
-                    "63f3173b44719d743f213102_dowell_survey_database",
-                    "voc_user_management",
+                    "kiosk_db",
+                    "kiosk",
                     {"_id": _id},
                     updated_data
                 ))
@@ -306,7 +306,7 @@ class KioskAPIView(APIView):
     def get_Kiosk_details(self, request):
         _id = request.data.get("_id")
         existing_kiosk_response = json.loads(
-            datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+            datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
                                     {"_id": _id}, 10000, 0, False))
         if existing_kiosk_response:
             return Response({
@@ -332,7 +332,7 @@ class KioskAPIView(APIView):
         longitude = request.data.get("longitude")
 
         create_kiosk_response = json.loads(
-            datacube_data_insertion(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+            datacube_data_insertion(api_key, "kiosk_db", "voc_kiosk_management",
                                     {
                                         "user_id": user_id,
                                         "name": name,
@@ -378,7 +378,7 @@ class KioskAPIView(APIView):
         _id = request.data.get("_id")
         update_data = request.data["data"]
         update_kiosk_response = json.loads(
-            datacube_data_update(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+            datacube_data_update(api_key, "kiosk_db", "voc_kiosk_management",
                                  {"_id": _id}, update_data))
         if update_kiosk_response.get("success"):
             return Response({
@@ -396,7 +396,7 @@ class KioskAPIView(APIView):
     def delete_Kiosk_details(self, request):
         _id = request.data.get("_id")
         delete_kiosk_response = json.loads(
-            datacube_data_delete(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+            datacube_data_delete(api_key, "kiosk_db", "voc_kiosk_management",
                                    {"_id": _id}))
         if delete_kiosk_response.get("success"):
             return Response({
@@ -414,7 +414,7 @@ class KioskAPIView(APIView):
         user_id = request.data.get("user_id")
         # Query to get kiosks for a specific user
         existing_kiosk_response = json.loads(
-            datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+            datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
                                     {"user_id": user_id}, 10000, 0, False))
         if existing_kiosk_response:
             user_kiosks = existing_kiosk_response["data"]
@@ -441,7 +441,7 @@ class KioskAPIView(APIView):
     @login_required
     def get_all_kiosks(self, request):
         # Fetching all kiosks for any user
-        all_kiosks_response = json.loads(datacube_data_retrieval(api_key, "63f3173b44719d743f213102_dowell_survey_database", "voc_kiosk_management",
+        all_kiosks_response = json.loads(datacube_data_retrieval(api_key, "kiosk_db", "voc_kiosk_management",
                                     {}, 10000, 0, False))  # Empty filter to get all records
         print(all_kiosks_response)
         if all_kiosks_response:
@@ -465,5 +465,54 @@ class KioskAPIView(APIView):
                 "message": "No kiosks available"
             }, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+@csrf_exempt
+def create_database_view(request):
+    """
+    View to handle database creation.
+    Expects a JSON request with `db_name` and `collections`
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            db_name = data.get("db_name")
+            collections = data.get("collections", [])
+
+            if not db_name or not collections:
+                return JsonResponse({"error": "Database name and collections are required"}, status=400)
+
+            response = create_database(db_name, collections)
+            return JsonResponse(response, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
+
+
+@csrf_exempt
+def add_collection_view(request):
+    """
+    View to handle adding a collection to an existing database.
+    Expects a JSON request with `database_id` and `collections`
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+
+            database_id = data.get("database_id")
+            collections = data.get("collections", [])
+
+            if not database_id or not collections:
+                return JsonResponse({"error": "Database ID and collections are required"}, status=400)
+
+            response = add_collection(database_id, collections)
+            return JsonResponse(response, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON format"}, status=400)
+    return JsonResponse({"error": "Invalid request method"}, status=405)
 
 
