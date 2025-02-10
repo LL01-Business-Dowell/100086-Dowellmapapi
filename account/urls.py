@@ -8,4 +8,5 @@ urlpatterns = [
     path("kiosk/",KioskAPIView.as_view()),
     path("create-database/", create_database_view, name="create_database"),
     path("add-collection/", add_collection_view, name="add_collection")
+    
 ]
